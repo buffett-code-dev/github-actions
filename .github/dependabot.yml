@@ -1,0 +1,17 @@
+  - package-ecosystem: "github-actions"
+    directory: "./.github/actions/aws/credentials"
+    schedule:
+      interval: "weekly"
+      timezone: "Asia/Tokyo"
+
+  - package-ecosystem: "github-actions"
+    directory: "./.github/actions/aws/lambda_function_update"
+    schedule:
+      interval: "weekly"
+      timezone: "Asia/Tokyo"
+
+  - package-ecosystem: "github-actions"
+    directory: "./.github/actions/docker/build"
+    schedule:
+      interval: "weekly"
+      timezone: "Asia/Tokyo"
