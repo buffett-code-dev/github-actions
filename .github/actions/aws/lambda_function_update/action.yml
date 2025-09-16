@@ -1,0 +1,23 @@
+name: aws-lambda-function-update
+
+inputs:
+  tag:
+    required: false
+    default: 'main'
+  context:
+    required: false
+    default: '.'
+  image:
+    required: true
+  function_name:
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: update lambda function ${{ inputs.function_name }}'s image
+      run: |
+        aws lambda update-function-code \
+          --function-name ${{ inputs.function_name }} \
+          --image-uri ${{ inputs.image }}:${{ inputs.tag }}
+      shell: bash
