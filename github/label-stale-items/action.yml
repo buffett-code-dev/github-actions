@@ -43,6 +43,3 @@ runs:
         days-before-pr-close: ${{ inputs.days-before-pr-close }}
         stale-pr-message: 'このPRは${{ inputs.days-before-pr-stale }}日以上経過しています。'
 
-branding:
-  icon: 'clock'
-  color: 'gray-dark'
