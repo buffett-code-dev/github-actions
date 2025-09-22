@@ -1,0 +1,45 @@
+name: 'Label Inactive Issues'
+description: 'Add stale label to issues that have been inactive for specified days'
+author: 'buffett-code-dev'
+
+inputs:
+  repo-token:
+    description: 'GitHub token'
+    required: true
+    default: ${{ github.token }}
+  days-before-issue-stale:
+    description: 'Days before marking issue as stale'
+    default: '60'
+    required: false
+  days-before-issue-close:
+    description: 'Days before closing stale issue'
+    default: '-1'
+    required: false
+  stale-issue-label:
+    description: 'Label to add when issue is stale'
+    default: 'stale'
+    required: false
+  days-before-pr-stale:
+    description: 'Days before marking PR as stale'
+    default: '-1'
+    required: false
+  days-before-pr-close:
+    description: 'Days before closing stale PR'
+    default: '-1'
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Run stale action
+      uses: actions/stale@v9
+      with:
+        repo-token: ${{ inputs.repo-token }}
+        days-before-issue-stale: ${{ inputs.days-before-issue-stale }}
+        days-before-issue-close: ${{ inputs.days-before-issue-close }}
+        stale-issue-label: ${{ inputs.stale-issue-label }}
+        stale-issue-message: 'このissueは${{ inputs.days-before-issue-stale }}日以上経過しています。'
+        days-before-pr-stale: ${{ inputs.days-before-pr-stale }}
+        days-before-pr-close: ${{ inputs.days-before-pr-close }}
+        stale-pr-message: 'このPRは${{ inputs.days-before-pr-stale }}日以上経過しています。'
+
