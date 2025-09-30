@@ -1,0 +1,33 @@
+name: 'Dependabot Auto Merge'
+description: 'Automatically merge Dependabot PRs for patch version updates'
+author: 'buffett-code-dev'
+
+inputs:
+  github-token:
+    description: 'GitHub token with pull request write permissions'
+    required: true
+    default: ${{ github.token }}
+  pr-url:
+    description: 'Pull request URL to merge'
+    required: true
+    default: ${{ github.event.pull_request.html_url }}
+  update-type:
+    description: 'Type of update to auto-merge (e.g., version-update:semver-patch)'
+    required: false
+    default: 'version-update:semver-patch'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Dependabot metadata
+      id: metadata
+      uses: dependabot/fetch-metadata@v2.4.0
+      with:
+        github-token: ${{ inputs.github-token }}
+
+    - name: Enable auto-merge for Dependabot PRs
+      if: ${{ steps.metadata.outputs.update-type == inputs.update-type }}
+      shell: bash
+      run: gh pr merge --auto --merge "${{ inputs.pr-url }}"
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
