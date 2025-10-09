@@ -1,0 +1,43 @@
+name: 'Amazon ECR Login'
+description: 'Wrapper action for aws-actions/amazon-ecr-login@vN to standardize ECR login across team repositories'
+author: 'buffett-code-dev'
+# Usage: 
+# ```
+#      - name: Login to Amazon ECR
+#        id: login-ecr
+# -      uses: aws-actions/amazon-ecr-login@v2
+# +      uses: buffett-code-dev/github/amazon-ecr-login@main
+# ```
+
+inputs:
+  registry-type:
+    description: 'Type of ECR registry to login to (private or public)'
+    required: false
+    default: 'private'
+  registries:
+    description: 'Comma-delimited list of AWS account IDs to login to (only for private registry)'
+    required: false
+  mask-password:
+    description: 'Whether to mask the Docker password in logs'
+    required: false
+    default: 'true'
+  http-proxy:
+    description: 'HTTP proxy to use for AWS API calls'
+    required: false
+
+outputs:
+  registry:
+    description: 'The ECR registry URI'
+    value: ${{ steps.login-ecr.outputs.registry }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+      with:
+        registry-type: ${{ inputs.registry-type }}
+        registries: ${{ inputs.registries }}
+        mask-password: ${{ inputs.mask-password }}
+        http-proxy: ${{ inputs.http-proxy }}
