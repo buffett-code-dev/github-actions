@@ -5,15 +5,18 @@ updates:
     schedule:
       interval: "weekly"
       timezone: "Asia/Tokyo"
+    open-pull-requests-limit: 0
 
   - package-ecosystem: "github-actions"
     directory: "./aws/lambda_function_update"
     schedule:
       interval: "weekly"
       timezone: "Asia/Tokyo"
+    open-pull-requests-limit: 0
 
   - package-ecosystem: "github-actions"
     directory: "./docker/build"
     schedule:
       interval: "weekly"
       timezone: "Asia/Tokyo"
+    open-pull-requests-limit: 0
