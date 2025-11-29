@@ -1,0 +1,40 @@
+name: serverless-python-setup
+description: 'Setup Serverless Framework with Python runtime support'
+author: 'buffett-code-dev'
+
+# Note: https://github.com/serverless/github-action は利用せず、直接セットアップする
+# serverless/github-action@2 は Python runtime を持たないため、serverless-python-requirements が動作しない
+
+
+inputs:
+  node-version:
+    description: 'Node.js version to setup'
+    required: false
+    default: '20'
+  serverless-version:
+    description: 'Serverless Framework version'
+    required: false
+    default: '2.72.4'
+  serverless-prune-plugin-version:
+    description: 'serverless-prune-plugin version'
+    required: false
+    default: '1.6.1'
+  serverless-python-requirements-version:
+    description: 'serverless-python-requirements version'
+    required: false
+    default: '5.4.0'
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v6
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Install serverless and plugins
+      shell: bash
+      run: |
+        npm install --ignore-scripts \
+          serverless@${{ inputs.serverless-version }} \
+          serverless-prune-plugin@${{ inputs.serverless-prune-plugin-version }} \
+          serverless-python-requirements@${{ inputs.serverless-python-requirements-version }}

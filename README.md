@@ -8,7 +8,8 @@
 .
 ├── aws/                    # AWS関連のアクション
 ├── docker/                 # Docker関連のアクション
-└── github/                 # GitHub関連のアクション
+├── github/                 # GitHub関連のアクション
+└── serverless/             # Serverless Framework関連のアクション
 ```
 
 各アクションは以下の構造で配置します:
@@ -29,6 +30,7 @@
 - **[github/amazon-ecr-login](github/amazon-ecr-login/)** - Amazon ECRへのログイン
 - **[github/label-stale-items](github/label-stale-items/)** - 古いissueへのラベル付与
 - **[github/dependabot-auto-merge](github/dependabot-auto-merge/)** - Dependabot PRの自動マージ
+- **[serverless/python-setup](serverless/python-setup/)** - Python環境でのServerless Frameworkセットアップ
 
 各アクションの詳細な使用方法は、それぞれのディレクトリ内のREADMEを参照してください。
 
