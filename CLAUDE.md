@@ -60,7 +60,16 @@ buffett-code-devプロジェクト内の複数のリポジトリで共通的に�
    - `name`
    - `inputs`(required/defaultを明示)
    - `runs.using: composite`
-3. 必要に応じて、　`.github/dependabot.yml`に新しいディレクトリを追加してDependabot管理下に配置
+3. `README.md`を作成して使用方法を記載
+4. 必要に応じて、　`.github/dependabot.yml`に新しいディレクトリを追加してDependabot管理下に配置
+
+### action.ymlの変更時の重要な注意事項
+**`action.yml`を変更した場合、必ず同じディレクトリ内の`README.md`も更新すること**
+
+- パラメータの追加・削除・変更時は、READMEのパラメータ表を更新
+- デフォルト値を変更した場合も、READMEに反映
+- 使用例が古くなっていないか確認
+- 各アクションは`action.yml`と`README.md`が常に同期している必要がある
 
 ### Dependabot設定
 - 全てのアクションディレクトリが`.github/dependabot.yml`で管理されている
