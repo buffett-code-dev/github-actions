@@ -122,15 +122,5 @@ jobs:
 
 ## 注意事項
 
-- Serverless Frameworkは廃止予定のため、バージョンは固定されています
-- 将来的には別のデプロイ方法への移行を検討してください
+- Serverless Frameworkを利用したデプロイは廃止予定のため、将来的には別のデプロイ方法への移行を検討してください
 - `--ignore-scripts`フラグを使用してnpmインストールのセキュリティリスクを軽減しています
-
-## 代替案
-
-Serverless Frameworkの廃止に伴い、以下のような代替案を検討することをお勧めします:
-
-- AWS SAM (Serverless Application Model)
-- AWS CDK (Cloud Development Kit)
-- Terraform
-- 直接のAWS CLIコマンドによるデプロイ
