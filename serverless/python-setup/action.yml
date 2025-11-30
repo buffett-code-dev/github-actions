@@ -31,6 +31,12 @@ runs:
       with:
         node-version: ${{ inputs.node-version }}
 
+    - name: Install safe-chain
+      shell: bash
+      run: |
+        npm install -g @aikidosec/safe-chain
+        safe-chain setup-ci
+
     - name: Install serverless and plugins
       shell: bash
       run: |

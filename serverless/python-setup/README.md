@@ -8,9 +8,8 @@ Python runtime環境でServerless Frameworkを使用するためのセットア�
 
 ## 背景
 
-- `serverless/github-action@v2`はPython runtimeを持たないため、`serverless-python-requirements`プラグインが動作しません
+- `serverless/github-action`はPython runtimeを持たないため、`serverless-python-requirements`プラグインが動作しません
 - Serverless Frameworkは廃止が決まっているため、安定したバージョンをハードコードして使用します
-- 参考: [project-management#617](https://github.com/buffett-code-dev/project-management/issues/617), [project-management#214](https://github.com/buffett-code-dev/project-management/issues/214)
 
 ## 使用方法
 
@@ -121,6 +120,6 @@ jobs:
 - AWS認証が完了していること (デプロイする場合)
 
 ## 注意事項
-
-- Serverless Frameworkを利用したデプロイは廃止予定のため、将来的には別のデプロイ方法への移行を検討してください
+- `npm install` の前に `safe-chain setup-ci` を実行してセキュリティリスクを軽減しています
+-  Serverless Frameworkを利用したデプロイは廃止予定のため、将来的には別のデプロイ方法への移行を検討してください
 - `--ignore-scripts`フラグを使用してnpmインストールのセキュリティリスクを軽減しています
