@@ -5,39 +5,53 @@ updates:
     schedule:
       interval: "weekly"
       timezone: "Asia/Tokyo"
+    cooldown:
+      default-days: 2
 
   - package-ecosystem: "github-actions"
     directory: "./aws/lambda_function_update"
     schedule:
       interval: "weekly"
       timezone: "Asia/Tokyo"
+    cooldown:
+      default-days: 2
 
   - package-ecosystem: "github-actions"
     directory: "./docker/build"
     schedule:
       interval: "weekly"
       timezone: "Asia/Tokyo"
+    cooldown:
+      default-days: 2
 
   - package-ecosystem: "github-actions"
     directory: "./github/amazon-ecr-login"
     schedule:
       interval: "weekly"
       timezone: "Asia/Tokyo"
+    cooldown:
+      default-days: 2
 
   - package-ecosystem: "github-actions"
     directory: "./github/dependabot-auto-merge"
     schedule:
       interval: "weekly"
       timezone: "Asia/Tokyo"
+    cooldown:
+      default-days: 2
 
   - package-ecosystem: "github-actions"
     directory: "./github/label-stale-items"
     schedule:
       interval: "weekly"
       timezone: "Asia/Tokyo"
+    cooldown:
+      default-days: 2
 
   - package-ecosystem: "github-actions"
     directory: "./serverless/python-setup"
     schedule:
       interval: "weekly"
       timezone: "Asia/Tokyo"
+    cooldown:
+      default-days: 2
