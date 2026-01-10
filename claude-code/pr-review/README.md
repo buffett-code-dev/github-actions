@@ -38,7 +38,7 @@ jobs:
       id-token: write
     steps:
       - name: Run Claude PR Review
-        uses: buffett-code-dev/github-actions/claude/pr-review@main
+        uses: buffett-code-dev/github-actions/claude-code/pr-review@main
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
 ```
