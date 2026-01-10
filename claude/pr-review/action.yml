@@ -1,0 +1,35 @@
+name: 'Claude PR Review'
+description: 'Claude Code ActionによるPRレビューとIssue対応'
+author: 'buffett-code-dev'
+
+inputs:
+  anthropic_api_key:
+    description: 'Anthropic API Key'
+    required: true
+  timeout_minutes:
+    description: 'タイムアウト時間（分）'
+    required: false
+    default: '60'
+  allowed_bots:
+    description: '許可するボットのリスト（カンマ区切り）'
+    required: false
+    default: ''
+  checkout_fetch_depth:
+    description: 'チェックアウト時のfetch-depth'
+    required: false
+    default: '1'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v6
+      with:
+        fetch-depth: ${{ inputs.checkout_fetch_depth }}
+
+    - name: Run Claude PR Action
+      uses: anthropics/claude-code-action@v1.0.29
+      with:
+        anthropic_api_key: ${{ inputs.anthropic_api_key }}
+        timeout_minutes: ${{ inputs.timeout_minutes }}
+        allowed_bots: ${{ inputs.allowed_bots }}
