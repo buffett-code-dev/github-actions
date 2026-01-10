@@ -78,6 +78,10 @@ jobs:
 
 - `ANTHROPIC_API_KEY`: Anthropic APIキー（Organization secretsで設定推奨）
 
+## セキュリティに関する注意事項
+
+このActionでは、`anthropics/claude-code-action` のバージョンを `v1` のようなメジャーバージョン指定ではなく、`v1.0.29` のようにパッチバージョンまで明記しています。これは、よりセキュアに運用するための措置です。
+
 ## 関連リンク
 
 - [anthropics/claude-code-action](https://github.com/anthropics/claude-code-action)
