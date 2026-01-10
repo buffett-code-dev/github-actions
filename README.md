@@ -7,6 +7,7 @@
 ```
 .
 ├── aws/                    # AWS関連のアクション
+├── claude/                 # Claude AI関連のアクション
 ├── docker/                 # Docker関連のアクション
 ├── github/                 # GitHub関連のアクション
 └── serverless/             # Serverless Framework関連のアクション
@@ -26,6 +27,7 @@
 
 - **[aws/credentials](aws/credentials/)** - AWS認証情報を設定
 - **[aws/lambda_function_update](aws/lambda_function_update/)** - Lambda関数のDockerイメージを更新
+- **[claude/pr-review](claude/pr-review/)** - Claude AIによるPRレビューとIssue対応
 - **[docker/build](docker/build/)** - Dockerイメージのビルドとプッシュ
 - **[github/amazon-ecr-login](github/amazon-ecr-login/)** - Amazon ECRへのログイン
 - **[github/label-stale-items](github/label-stale-items/)** - 古いissueへのラベル付与
