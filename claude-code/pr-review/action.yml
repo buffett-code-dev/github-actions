@@ -28,7 +28,7 @@ runs:
         fetch-depth: ${{ inputs.checkout_fetch_depth }}
 
     - name: Run Claude PR Action
-      uses: anthropics/claude-code-action@v1.0.29
+      uses: anthropics/claude-code-action@v1
       with:
         anthropic_api_key: ${{ inputs.anthropic_api_key }}
         timeout_minutes: ${{ inputs.timeout_minutes }}
