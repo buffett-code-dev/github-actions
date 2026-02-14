@@ -1,5 +1,5 @@
-name: 'Amazon ECR Login (Deprecated)'
-description: '[DEPRECATED] このアクションは非推奨です。代わりに aws/ecr-login を使用してください。'
+name: 'Amazon ECR Login'
+description: 'Wrapper action for aws-actions/amazon-ecr-login@vN to standardize ECR login across team repositories'
 author: 'buffett-code-dev'
 
 inputs:
@@ -21,14 +21,14 @@ inputs:
 outputs:
   registry:
     description: 'The ECR registry URI'
-    value: ${{ steps.ecr-login.outputs.registry }}
+    value: ${{ steps.login-ecr.outputs.registry }}
 
 runs:
   using: 'composite'
   steps:
     - name: Login to Amazon ECR
-      id: ecr-login
-      uses: buffett-code-dev/github-actions/aws/ecr-login@main
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
       with:
         registry-type: ${{ inputs.registry-type }}
         registries: ${{ inputs.registries }}

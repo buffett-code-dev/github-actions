@@ -25,7 +25,7 @@ updates:
       default-days: 2
 
   - package-ecosystem: "github-actions"
-    directory: "./docker/build"
+    directory: "./aws/ecr-login"
     schedule:
       interval: "weekly"
       timezone: "Asia/Tokyo"
@@ -33,7 +33,7 @@ updates:
       default-days: 2
 
   - package-ecosystem: "github-actions"
-    directory: "./github/amazon-ecr-login"
+    directory: "./docker/build"
     schedule:
       interval: "weekly"
       timezone: "Asia/Tokyo"

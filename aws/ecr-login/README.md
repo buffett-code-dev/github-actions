@@ -1,21 +1,11 @@
-# github/amazon-ecr-login
+# aws/ecr-login
 
-> **DEPRECATED**: このアクションは非推奨です。代わりに [`aws/ecr-login`](../../aws/ecr-login/README.md) を使用してください。
->
-> ```yaml
-> # 旧（非推奨）
-> - uses: buffett-code-dev/github-actions/github/amazon-ecr-login@main
->
-> # 新（推奨）
-> - uses: buffett-code-dev/github-actions/aws/ecr-login@main
-> ```
-
-Amazon ECRへのログインを行うComposite Actionです。このアクションは後方互換性のために維持されており、内部的に `aws/ecr-login` を呼び出します。
+Amazon ECRへのログインを行うComposite Actionです。`aws-actions/amazon-ecr-login`のラッパーで、チーム全体で統一されたECRログイン方法を提供します。
 
 ## 使用方法
 
 ```yaml
-- uses: buffett-code-dev/github-actions/github/amazon-ecr-login@main
+- uses: buffett-code-dev/github-actions/aws/ecr-login@main
 ```
 
 ## パラメータ
@@ -53,7 +43,7 @@ jobs:
 
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: buffett-code-dev/github-actions/github/amazon-ecr-login@main
+        uses: buffett-code-dev/github-actions/aws/ecr-login@main
 
       - name: Build and push
         run: |
@@ -65,7 +55,7 @@ jobs:
 
 ```yaml
 - name: Login to Amazon ECR Public
-  uses: buffett-code-dev/github-actions/github/amazon-ecr-login@main
+  uses: buffett-code-dev/github-actions/aws/ecr-login@main
   with:
     registry-type: public
 ```
@@ -74,7 +64,7 @@ jobs:
 
 ```yaml
 - name: Login to multiple ECR registries
-  uses: buffett-code-dev/github-actions/github/amazon-ecr-login@main
+  uses: buffett-code-dev/github-actions/aws/ecr-login@main
   with:
     registries: "123456789012,987654321098"
 ```
@@ -97,23 +87,13 @@ jobs:
 
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: buffett-code-dev/github-actions/github/amazon-ecr-login@main
+        uses: buffett-code-dev/github-actions/aws/ecr-login@main
 
       - uses: buffett-code-dev/github-actions/docker/build@main
         with:
           file: ./Dockerfile
           image: ${{ steps.login-ecr.outputs.registry }}/my-app
           push: true
-```
-
-## 従来の書き方からの移行
-
-```yaml
-# 従来の書き方
-- uses: aws-actions/amazon-ecr-login@v2
-
-# 新しい書き方
-- uses: buffett-code-dev/github-actions/github/amazon-ecr-login@main
 ```
 
 ## 前提条件
