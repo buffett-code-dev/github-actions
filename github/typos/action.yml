@@ -1,0 +1,32 @@
+name: 'Typos Check'
+description: 'Check for typos in your codebase using crate-ci/typos'
+author: 'buffett-code-dev'
+
+inputs:
+  files:
+    description: 'Files or patterns to check'
+    required: false
+    default: ''
+  config:
+    description: 'Path to custom configuration file'
+    required: false
+    default: ''
+  isolated:
+    description: 'Ignore implicit configuration files'
+    required: false
+    default: 'false'
+  write-changes:
+    description: 'Write changes to disk (does not commit)'
+    required: false
+    default: 'false'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Run typos check
+      uses: crate-ci/typos@v1.32.0
+      with:
+        files: ${{ inputs.files }}
+        config: ${{ inputs.config }}
+        isolated: ${{ inputs.isolated }}
+        write_changes: ${{ inputs.write-changes }}

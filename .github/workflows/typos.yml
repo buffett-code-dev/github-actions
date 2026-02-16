@@ -9,7 +9,7 @@ jobs:
   typos:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      
-      - name: Run typos check
-        uses: crate-ci/typos@v1.42.3
+      - uses: actions/checkout@v4
+
+      - name: Check typos
+        uses: ./github/typos

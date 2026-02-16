@@ -57,6 +57,14 @@ updates:
       default-days: 2
 
   - package-ecosystem: "github-actions"
+    directory: "./github/typos"
+    schedule:
+      interval: "weekly"
+      timezone: "Asia/Tokyo"
+    cooldown:
+      default-days: 2
+
+  - package-ecosystem: "github-actions"
     directory: "./serverless/python-setup"
     schedule:
       interval: "weekly"
