@@ -1,0 +1,15 @@
+name: typos
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  typos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      
+      - name: Run typos check
+        uses: crate-ci/typos@v1.42.3
