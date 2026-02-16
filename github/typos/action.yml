@@ -24,7 +24,7 @@ runs:
   using: 'composite'
   steps:
     - name: Run typos check
-      uses: crate-ci/typos@v1.32.0
+      uses: crate-ci/typos@v1.43.4
       with:
         files: ${{ inputs.files }}
         config: ${{ inputs.config }}
