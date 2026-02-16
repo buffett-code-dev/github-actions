@@ -7,7 +7,7 @@
 
 ```yaml
 steps:
-  - uses: actions/checkout@v4
+  - uses: actions/checkout@v6
 
   - name: Check typos
     uses: buffett-code-dev/github-actions/github/typos@main
