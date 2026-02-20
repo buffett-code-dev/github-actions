@@ -71,3 +71,11 @@ updates:
       timezone: "Asia/Tokyo"
     cooldown:
       default-days: 2
+
+  - package-ecosystem: "github-actions"
+    directory: ".github/workflows"
+    schedule:
+      interval: "weekly"
+      timezone: "Asia/Tokyo"
+    cooldown:
+      default-days: 2
