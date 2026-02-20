@@ -26,12 +26,13 @@
 ## 利用可能なアクション
 
 - **[aws/credentials](aws/credentials/)** - AWS認証情報を設定
+- **[aws/ecr-login](aws/ecr-login/)** - Amazon ECRへのログイン
 - **[aws/lambda_function_update](aws/lambda_function_update/)** - Lambda関数のDockerイメージを更新
 - **[claude-code/pr-review](claude-code/pr-review/)** - Claude CodeによるPRレビューとIssue対応
 - **[docker/build](docker/build/)** - Dockerイメージのビルドとプッシュ
-- **[github/amazon-ecr-login](github/amazon-ecr-login/)** - Amazon ECRへのログイン
-- **[github/label-stale-items](github/label-stale-items/)** - 古いissueへのラベル付与
 - **[github/dependabot-auto-merge](github/dependabot-auto-merge/)** - Dependabot PRの自動マージ
+- **[github/label-stale-items](github/label-stale-items/)** - 古いissueへのラベル付与
+- **[github/typos](github/typos/)** - タイポチェック
 - **[serverless/python-setup](serverless/python-setup/)** - Python環境でのServerless Frameworkセットアップ
 
 各アクションの詳細な使用方法は、それぞれのディレクトリ内のREADMEを参照してください。
