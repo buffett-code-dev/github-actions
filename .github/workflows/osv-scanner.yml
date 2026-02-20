@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   scan-pr:
-    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable-pr.yml@v2.3.0
+    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable-pr.yml@v2.3.3
     with:
       upload-sarif: false
       fail-on-vuln: true
