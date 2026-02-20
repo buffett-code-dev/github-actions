@@ -1,6 +1,7 @@
 name: OSV-Scanner PR Scan
 
 on:
+  workflow_call:
   pull_request:
 
 permissions:
