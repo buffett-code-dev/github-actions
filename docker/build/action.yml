@@ -35,7 +35,7 @@ runs:
           ' }}
 
     - name: Build and push and cache
-      uses: docker/build-push-action@v6
+      uses: docker/build-push-action@v7
       with:
         context: ${{ inputs.context }}
         file: ${{ inputs.file }}
