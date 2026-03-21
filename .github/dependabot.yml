@@ -65,7 +65,7 @@ updates:
       default-days: 2
 
   - package-ecosystem: "github-actions"
-    directory: "./serverless/python-setup"
+    directory: "./github/git-pr-release"
     schedule:
       interval: "weekly"
       timezone: "Asia/Tokyo"
@@ -73,7 +73,7 @@ updates:
       default-days: 2
 
   - package-ecosystem: "github-actions"
-    directory: "./github/git-pr-release"
+    directory: "./serverless/python-setup"
     schedule:
       interval: "weekly"
       timezone: "Asia/Tokyo"

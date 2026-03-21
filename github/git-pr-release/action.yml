@@ -6,33 +6,16 @@ inputs:
   github-token:
     description: 'GitHub token with pull request write permissions'
     required: true
-    default: ${{ github.token }}
   branch-production:
     description: 'Production branch name'
     required: true
   branch-staging:
     description: 'Staging branch name'
     required: true
-  squashed:
-    description: 'Include squash-merged PRs'
-    required: false
-    default: 'true'
   labels:
     description: 'Comma-separated labels to add to the release PR'
     required: false
     default: 'release'
-  template:
-    description: 'Path to ERB template file for release PR body'
-    required: false
-    default: ''
-  ruby-version:
-    description: 'Ruby version to use'
-    required: false
-    default: '3.4'
-  timezone:
-    description: 'Timezone for release PR timestamps'
-    required: false
-    default: 'Asia/Tokyo'
 
 runs:
   using: 'composite'
@@ -54,8 +37,7 @@ runs:
       if: ${{ steps.check-diff.outputs.diff_count != '0' }}
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: ${{ inputs.ruby-version }}
-        bundler-cache: true
+        ruby-version: '3.4'
 
     - name: Install git-pr-release
       if: ${{ steps.check-diff.outputs.diff_count != '0' }}
@@ -65,11 +47,10 @@ runs:
     - name: Create release PR
       if: ${{ steps.check-diff.outputs.diff_count != '0' }}
       shell: bash
-      run: git-pr-release ${{ inputs.squashed == 'true' && '--squashed' || '' }}
+      run: git-pr-release
       env:
         GIT_PR_RELEASE_TOKEN: ${{ inputs.github-token }}
         GIT_PR_RELEASE_BRANCH_PRODUCTION: ${{ inputs.branch-production }}
         GIT_PR_RELEASE_BRANCH_STAGING: ${{ inputs.branch-staging }}
         GIT_PR_RELEASE_LABELS: ${{ inputs.labels }}
-        GIT_PR_RELEASE_TEMPLATE: ${{ inputs.template }}
-        TZ: ${{ inputs.timezone }}
+        TZ: Asia/Tokyo
