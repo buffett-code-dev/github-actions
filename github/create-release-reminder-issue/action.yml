@@ -1,0 +1,59 @@
+name: 'Create Release Reminder Issue'
+description: 'Create a GitHub issue to remind releasing when there are unreleased commits for GitHub Flow repositories'
+author: 'buffett-code-dev'
+
+inputs:
+  github-token:
+    description: 'GitHub token with issues write permissions'
+    required: true
+  base-branch:
+    description: 'Branch to check for unreleased commits'
+    required: true
+  assignees:
+    description: 'Comma-separated GitHub usernames to assign to the issue'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Check for unreleased commits
+      id: check
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+      run: |
+        # 最新のリリースタグを取得
+        LATEST_TAG=$(gh release view --json tagName --jq '.tagName' 2>/dev/null || echo "")
+
+        if [ -z "$LATEST_TAG" ]; then
+          echo "No releases found. Skipping."
+          echo "should_create=false" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+
+        # リリースタグとbase-branchに差分があるか確認
+        if git diff --quiet "${LATEST_TAG}" "origin/${{ inputs.base-branch }}"; then
+          echo "No diff since ${LATEST_TAG}. Skipping."
+          echo "should_create=false" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+
+        echo "Found unreleased changes since ${LATEST_TAG}."
+        echo "should_create=true" >> "$GITHUB_OUTPUT"
+
+    - name: Create reminder issue
+      if: ${{ steps.check.outputs.should_create == 'true' }}
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+      run: |
+        REPO_URL="${{ github.server_url }}/${{ github.repository }}"
+        RELEASE_URL="${REPO_URL}/releases/new"
+
+        TODAY=$(TZ=Asia/Tokyo date +%Y-%m-%d)
+
+        gh issue create \
+          --title "リリースリマインド: 未リリースの変更があります (${TODAY})" \
+          --label "release-required" \
+          --assignee "${{ inputs.assignees }}" \
+          --body "最後のリリース以降、未リリースの変更があります。[新しいリリースを作成](${RELEASE_URL})してください。"
