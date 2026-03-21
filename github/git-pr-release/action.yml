@@ -1,0 +1,56 @@
+name: 'Git PR Release'
+description: 'Create a release pull request from staging branch to production branch using git-pr-release'
+author: 'buffett-code-dev'
+
+inputs:
+  github-token:
+    description: 'GitHub token with pull request write permissions'
+    required: true
+  branch-production:
+    description: 'Production branch name'
+    required: true
+  branch-staging:
+    description: 'Staging branch name'
+    required: true
+  labels:
+    description: 'Comma-separated labels to add to the release PR'
+    required: false
+    default: 'release'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Check for diff between branches
+      id: check-diff
+      shell: bash
+      run: |
+        git fetch origin ${{ inputs.branch-production }} ${{ inputs.branch-staging }}
+        DIFF_COUNT=$(git rev-list --count origin/${{ inputs.branch-production }}..origin/${{ inputs.branch-staging }})
+        echo "diff_count=$DIFF_COUNT" >> "$GITHUB_OUTPUT"
+        if [ "$DIFF_COUNT" -eq 0 ]; then
+          echo "No diff between ${{ inputs.branch-production }} and ${{ inputs.branch-staging }}. Skipping."
+        else
+          echo "Found $DIFF_COUNT commit(s) to release."
+        fi
+
+    - name: Setup Ruby
+      if: ${{ steps.check-diff.outputs.diff_count != '0' }}
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.4'
+
+    - name: Install git-pr-release
+      if: ${{ steps.check-diff.outputs.diff_count != '0' }}
+      shell: bash
+      run: gem install --no-document git-pr-release
+
+    - name: Create release PR
+      if: ${{ steps.check-diff.outputs.diff_count != '0' }}
+      shell: bash
+      run: git-pr-release
+      env:
+        GIT_PR_RELEASE_TOKEN: ${{ inputs.github-token }}
+        GIT_PR_RELEASE_BRANCH_PRODUCTION: ${{ inputs.branch-production }}
+        GIT_PR_RELEASE_BRANCH_STAGING: ${{ inputs.branch-staging }}
+        GIT_PR_RELEASE_LABELS: ${{ inputs.labels }}
+        TZ: Asia/Tokyo
