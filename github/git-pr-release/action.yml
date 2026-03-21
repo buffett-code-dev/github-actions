@@ -16,6 +16,9 @@ inputs:
     description: 'Comma-separated labels to add to the release PR'
     required: false
     default: 'release'
+  template:
+    description: 'Path to the ERB template file for the release PR body'
+    required: false
 
 runs:
   using: 'composite'
@@ -43,6 +46,13 @@ runs:
       if: ${{ steps.check-diff.outputs.diff_count != '0' }}
       shell: bash
       run: gem install --no-document git-pr-release
+
+    - name: Set template path
+      if: ${{ inputs.template != '' }}
+      shell: bash
+      run: echo "GIT_PR_RELEASE_TEMPLATE=${TEMPLATE}" >> "$GITHUB_ENV"
+      env:
+        TEMPLATE: ${{ inputs.template }}
 
     - name: Create release PR
       if: ${{ steps.check-diff.outputs.diff_count != '0' }}
