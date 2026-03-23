@@ -64,3 +64,4 @@ jobs:
 
 - `actions/checkout` で `fetch-depth: 0` を指定して全履歴とタグを取得すること
 - ワークフローが `issues: write` 権限を持っていること
+- リポジトリに `release-required` ラベルを事前に作成しておくこと

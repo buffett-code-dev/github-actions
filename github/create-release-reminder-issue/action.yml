@@ -56,4 +56,4 @@ runs:
           --title "リリースリマインド: 未リリースの変更があります (${TODAY})" \
           --label "release-required" \
           --assignee "${{ inputs.assignees }}" \
-          --body "最後のリリース以降、未リリースの変更があります。[新しいリリースを作成](${RELEASE_URL})してください。"
+          --body "未リリースの変更が溜まっています。[新しいリリースを作成](${RELEASE_URL})してください。"
