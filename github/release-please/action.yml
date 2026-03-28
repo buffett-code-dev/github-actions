@@ -72,7 +72,11 @@ runs:
     - name: Export all outputs
       id: export-outputs
       shell: bash
+      env:
+        OUTPUTS_JSON: ${{ toJSON(steps.release-please.outputs) }}
       run: |
-        cat <<'EOF' >> "$GITHUB_OUTPUT"
-        all=${{ toJSON(steps.release-please.outputs) }}
-        EOF
+        {
+          echo "all<<RELEASE_PLEASE_OUTPUTS_EOF"
+          echo "$OUTPUTS_JSON"
+          echo "RELEASE_PLEASE_OUTPUTS_EOF"
+        } >> "$GITHUB_OUTPUT"
