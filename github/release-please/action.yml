@@ -74,9 +74,4 @@ runs:
       shell: bash
       env:
         OUTPUTS_JSON: ${{ toJSON(steps.release-please.outputs) }}
-      run: |
-        {
-          echo "all<<RELEASE_PLEASE_OUTPUTS_EOF"
-          echo "$OUTPUTS_JSON"
-          echo "RELEASE_PLEASE_OUTPUTS_EOF"
-        } >> "$GITHUB_OUTPUT"
+      run: echo "all=$(echo "$OUTPUTS_JSON" | jq -c .)" >> "$GITHUB_OUTPUT"
