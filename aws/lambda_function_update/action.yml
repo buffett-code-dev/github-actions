@@ -20,4 +20,5 @@ runs:
         aws lambda update-function-code \
           --function-name ${{ inputs.function_name }} \
           --image-uri ${{ inputs.image }}:${{ inputs.tag }}
+        aws lambda wait function-updated --function-name ${{ inputs.function_name }}
       shell: bash
