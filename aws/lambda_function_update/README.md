@@ -19,6 +19,7 @@ Lambda関数のDockerイメージを更新するComposite Actionです。
 | `function_name` | ✓ | - | Lambda関数名 |
 | `image` | ✓ | - | コンテナイメージのURI (タグを除く) |
 | `tag` | | `main` | イメージタグ |
+| `wait_for_update` | | `false` | 更新完了を待つかどうか |
 
 ## 使用例
 

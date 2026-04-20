@@ -11,6 +11,9 @@ inputs:
     required: true
   function_name:
     required: true
+  wait_for_update:
+    required: false
+    default: 'false'
 
 runs:
   using: composite
@@ -20,4 +23,9 @@ runs:
         aws lambda update-function-code \
           --function-name ${{ inputs.function_name }} \
           --image-uri ${{ inputs.image }}:${{ inputs.tag }}
+      shell: bash
+    - name: wait lambda function ${{ inputs.function_name }} updated
+      if: inputs.wait_for_update == 'true'
+      run: |
+        aws lambda wait function-updated --function-name ${{ inputs.function_name }}
       shell: bash
