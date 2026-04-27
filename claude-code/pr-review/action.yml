@@ -6,10 +6,6 @@ inputs:
   anthropic_api_key:
     description: 'Anthropic API Key'
     required: true
-  timeout_minutes:
-    description: 'タイムアウト時間（分）'
-    required: false
-    default: '60'
   allowed_bots:
     description: '許可するボットのリスト（カンマ区切り）'
     required: false
@@ -29,8 +25,10 @@ runs:
 
     - name: Run Claude PR Action
       # よりセキュアに運用するため、v1 と記載せずにパッチバージョンまで明記している
-      uses: anthropics/claude-code-action@v1.0.101
+      # v1.0.89以降、SENSITIVE_PATHSにsymlinkが含まれるとcpSyncがENOENTでクラッシュするバグあり
+      # see: https://github.com/anthropics/claude-code-action/issues/1187
+      # 修正PR(#1186)がマージされたらバージョンを上げること
+      uses: anthropics/claude-code-action@v1.0.88
       with:
         anthropic_api_key: ${{ inputs.anthropic_api_key }}
-        timeout_minutes: ${{ inputs.timeout_minutes }}
         allowed_bots: ${{ inputs.allowed_bots }}
