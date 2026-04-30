@@ -28,7 +28,7 @@ runs:
       # v1.0.89以降、SENSITIVE_PATHSにsymlinkが含まれるとcpSyncがENOENTでクラッシュするバグあり
       # see: https://github.com/anthropics/claude-code-action/issues/1187
       # 修正PR(#1186)がマージされたらバージョンを上げること
-      uses: anthropics/claude-code-action@v1.0.88
+      uses: anthropics/claude-code-action@v1.0.107
       with:
         anthropic_api_key: ${{ inputs.anthropic_api_key }}
         allowed_bots: ${{ inputs.allowed_bots }}
