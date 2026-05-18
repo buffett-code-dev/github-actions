@@ -23,6 +23,27 @@ runs:
       with:
         fetch-depth: ${{ inputs.checkout_fetch_depth }}
 
+    - name: Ensure CLAUDE.md exists (copy from AGENTS.md if needed)
+      # CLAUDE.mdがAGENTS.mdへのsymlinkだった場合、symlinkを削除して実体のコピーに置き換える
+      # claude-code-action v1.0.89以降、SENSITIVE_PATHSにsymlinkが含まれると
+      # cpSyncがENOENTでクラッシュするバグがあるための回避
+      # see: https://github.com/anthropics/claude-code-action/issues/1187
+      shell: bash
+      run: |
+        if [ -L CLAUDE.md ] && [ "$(readlink CLAUDE.md)" = "AGENTS.md" ]; then
+          echo "CLAUDE.md is a symlink to AGENTS.md. Replacing with a copy."
+          rm CLAUDE.md
+          cp AGENTS.md CLAUDE.md
+        elif [ -e CLAUDE.md ]; then
+          echo "CLAUDE.md found."
+        elif [ -e AGENTS.md ]; then
+          echo "CLAUDE.md not found. Copying AGENTS.md to CLAUDE.md."
+          cp AGENTS.md CLAUDE.md
+        else
+          echo "::error::Neither CLAUDE.md nor AGENTS.md was found in the repository root. Please add one of them to use Claude PR Review."
+          exit 1
+        fi
+
     - name: Run Claude PR Action
       # よりセキュアに運用するため、v1 と記載せずにパッチバージョンまで明記している
       # v1.0.89以降、SENSITIVE_PATHSにsymlinkが含まれるとcpSyncがENOENTでクラッシュするバグあり

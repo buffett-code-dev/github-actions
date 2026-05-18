@@ -78,6 +78,19 @@ jobs:
 
 - `ANTHROPIC_API_KEY`: Anthropic APIキー（Organization secretsで設定推奨）
 
+## CLAUDE.md / AGENTS.md の取り扱い
+
+チェックアウト後、リポジトリルートに対して以下のチェックを行います:
+
+1. `CLAUDE.md` が `AGENTS.md` へのシンボリックリンクの場合: シンボリックリンクを削除して `AGENTS.md` の実体をコピーします
+2. `CLAUDE.md` が存在する場合: そのまま使用します
+3. `CLAUDE.md` が無く `AGENTS.md` が存在する場合: `AGENTS.md` を `CLAUDE.md` としてコピーします
+4. どちらも存在しない場合: エラーメッセージを出力してActionを失敗させます
+
+`AGENTS.md` を使っているリポジトリでも、ファイルを重複管理せずに Claude PR Review を利用できるようにするための挙動です。
+
+なお、シンボリックリンクを実体コピーに置き換えているのは、`claude-code-action` v1.0.89 以降で `SENSITIVE_PATHS` にsymlinkが含まれると `cpSync` が `ENOENT` でクラッシュするバグがあるためです（[anthropics/claude-code-action#1187](https://github.com/anthropics/claude-code-action/issues/1187)）。
+
 ## セキュリティに関する注意事項
 
 このActionでは、`anthropics/claude-code-action` のバージョンを `v1` のようなメジャーバージョン指定ではなく、`v1.0.29` のようにパッチバージョンまで明記しています。これは、よりセキュアに運用するための措置です。
