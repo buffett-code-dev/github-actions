@@ -3,9 +3,9 @@ name: OSV-Scanner Full Scan
 on:
   workflow_call:
     secrets:
-      SLACK_WEBHOOK_URL:
+      OSV_SCANNER_SLACK_WEBHOOK_URL:
         required: true
-        description: "Slack incoming webhook URL for vulnerability alerts"
+        description: "Slack incoming webhook URL for OSV-Scanner vulnerability alerts"
 
 permissions:
   actions: read
@@ -27,7 +27,7 @@ jobs:
       - name: Notify Slack on vulnerability
         uses: slackapi/slack-github-action@v3.0.3
         with:
-          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook: ${{ secrets.OSV_SCANNER_SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
             {
