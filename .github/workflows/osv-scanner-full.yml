@@ -42,3 +42,60 @@ jobs:
                 }
               ]
             }
+
+  create-issue:
+    needs: scan-full
+    if: failure()
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Create or update OSV-Scanner issue
+        uses: actions/github-script@v9.0.0
+        with:
+          script: |
+            const titlePrefix = '[OSV-Scanner]';
+            const issueTitle = `${titlePrefix} Vulnerabilities detected in daily scan`;
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const today = new Date().toISOString().slice(0, 10);
+
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              per_page: 100,
+            });
+
+            const existing = issues.find(
+              (i) => !i.pull_request && i.title.startsWith(titlePrefix)
+            );
+
+            const commentBody = `Re-detected on ${today}.\n\n[View run logs and SARIF artifact](${runUrl})`;
+
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body: commentBody,
+              });
+              core.info(`Commented on existing issue #${existing.number}`);
+            } else {
+              const body = [
+                'OSV-Scanner detected vulnerabilities in this repository during the daily full scan.',
+                '',
+                `**First detected:** ${today}`,
+                `**Workflow run:** [View logs and SARIF artifact](${runUrl})`,
+                '',
+                'This issue will be re-used for subsequent detections (added as comments).',
+                'Close this issue after resolving all vulnerabilities; new failures will then create a fresh issue.',
+              ].join('\n');
+
+              const { data: created } = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: issueTitle,
+                body,
+              });
+              core.info(`Created issue #${created.number}`);
+            }
