@@ -2,6 +2,10 @@ name: OSV-Scanner Full Scan
 
 on:
   workflow_call:
+    secrets:
+      SLACK_WEBHOOK_URL:
+        required: true
+        description: "Slack incoming webhook URL for vulnerability alerts"
 
 permissions:
   actions: read
@@ -11,3 +15,30 @@ permissions:
 jobs:
   scan-full:
     uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@v2.3.8
+    with:
+      upload-sarif: false
+      fail-on-vuln: true
+
+  notify-slack:
+    needs: scan-full
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Slack on vulnerability
+        uses: slackapi/slack-github-action@v3.0.3
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": ":rotating_light: OSV vulnerabilities detected in ${{ github.repository }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": ":rotating_light: *OSV-Scanner found vulnerabilities*\n*Repository:* `${{ github.repository }}`\n*Workflow:* `${{ github.workflow }}`\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run logs and SARIF artifact>"
+                  }
+                }
+              ]
+            }
