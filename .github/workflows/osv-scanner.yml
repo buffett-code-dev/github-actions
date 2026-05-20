@@ -10,8 +10,55 @@ permissions:
   contents: read
 
 jobs:
+  detect-dependency-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      has_dependency_changes: ${{ steps.detect.outputs.has_dependency_changes }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Detect dependency file changes
+        id: detect
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "${GITHUB_EVENT_NAME}" != "pull_request" ]]; then
+            echo "has_dependency_changes=true" >> "${GITHUB_OUTPUT}"
+            echo "Run OSV scan because this is not a pull_request event."
+            exit 0
+          fi
+
+          base_sha="${{ github.event.pull_request.base.sha }}"
+          head_sha="${{ github.event.pull_request.head.sha }}"
+
+          dependency_file_pattern='(^|/)(Cargo\.lock|Cargo\.toml|Gemfile|Gemfile\.lock|Pipfile|Pipfile\.lock|composer\.json|composer\.lock|go\.mod|go\.sum|gradle\.lockfile|package-lock\.json|package\.json|pdm\.lock|pnpm-lock\.yaml|poetry\.lock|pom\.xml|pyproject\.toml|requirements[^/]*\.txt|setup\.cfg|setup\.py|uv\.lock|yarn\.lock)$|(^|/)build\.gradle(\.kts)?$|(^|/)requirements/.*\.txt$'
+
+          changed_files="$(git diff --name-only "${base_sha}" "${head_sha}")"
+          dependency_files="$(printf '%s\n' "${changed_files}" | grep -E "${dependency_file_pattern}" || true)"
+
+          if [[ -n "${dependency_files}" ]]; then
+            echo "has_dependency_changes=true" >> "${GITHUB_OUTPUT}"
+            echo "Dependency files changed:"
+            printf '%s\n' "${dependency_files}"
+          else
+            echo "has_dependency_changes=false" >> "${GITHUB_OUTPUT}"
+            echo "No dependency file changes detected. Skip OSV scan."
+          fi
+
   scan-pr:
+    needs: detect-dependency-changes
+    if: needs.detect-dependency-changes.outputs.has_dependency_changes == 'true'
     uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable-pr.yml@v2.3.8
     with:
       upload-sarif: false
       fail-on-vuln: true
+
+  skip-osv-scan:
+    needs: detect-dependency-changes
+    if: needs.detect-dependency-changes.outputs.has_dependency_changes != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "No dependency file changes detected. OSV scan skipped."
