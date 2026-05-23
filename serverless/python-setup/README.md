@@ -116,5 +116,6 @@ jobs:
 ## 注意事項
 - `npm install` の前に `safe-chain setup-ci` を実行してセキュリティリスクを軽減しています
 - `package-lock.json` で依存を固定しているため、`safe-chain` の minimum package age チェックは transitive dependency の最新版に対しては発動しません
+- `serverless@3` 系の transitive dependency に既知の脆弱性が含まれますが、これまで本番運用していた組み合わせと同じです。詳細と OSV-Scanner 抑制理由は `osv-scanner.toml` を参照してください。serverless 廃止時に当該 lockfile と `osv-scanner.toml` ごと削除します
 - Serverless Frameworkを利用したデプロイは廃止予定のため、将来的には別のデプロイ方法への移行を検討してください
 - `--ignore-scripts`フラグを使用してnpmインストールのセキュリティリスクを軽減しています

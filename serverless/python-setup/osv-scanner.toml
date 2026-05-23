@@ -1,0 +1,48 @@
+# このディレクトリ配下の package-lock.json に含まれる以下の脆弱性は、
+# OSV-Scanner の検出を意図的に抑制する。
+#
+# 理由:
+# - serverless 自体が廃止予定 (README.md 参照)
+# - これまで `npm install serverless@3.38.0 ...` を実行時に行っており、
+#   同じ依存ツリーが本番運用で動いていた組み合わせ。lockfile 化で初めて
+#   CI スキャンに見えるようになっただけで、新たに混入したものではない
+# - すべての脆弱性は serverless@3 系の transitive dependency 由来で、
+#   v3 系は構造上 aws-sdk v2 / tar v6 / 古い uuid 等に依存しているため、
+#   v3 系内のバージョン差し替えでは解消できない
+# - serverless 廃止のタイミングで本ファイルごと削除する
+
+[[IgnoredVulns]]
+id = "GHSA-j965-2qgj-vjmq"
+reason = "aws-sdk v2 は EOL で修正版なし。serverless@3 が直接依存"
+
+[[IgnoredVulns]]
+id = "GHSA-5v7r-6r5c-r473"
+reason = "file-type@16.5.4。@serverless/utils / decompress-* 経由"
+
+[[IgnoredVulns]]
+id = "GHSA-34x7-hfp2-rc4v"
+reason = "tar@6.2.1。serverless@3 が ^6.1.15 で直接依存"
+
+[[IgnoredVulns]]
+id = "GHSA-83g3-92jg-28cx"
+reason = "tar@6.2.1。serverless@3 が ^6.1.15 で直接依存"
+
+[[IgnoredVulns]]
+id = "GHSA-8qq5-rm4j-mr97"
+reason = "tar@6.2.1。serverless@3 が ^6.1.15 で直接依存"
+
+[[IgnoredVulns]]
+id = "GHSA-9ppj-qmqm-q256"
+reason = "tar@6.2.1。serverless@3 が ^6.1.15 で直接依存"
+
+[[IgnoredVulns]]
+id = "GHSA-qffp-2rhf-9h96"
+reason = "tar@6.2.1。serverless@3 が ^6.1.15 で直接依存"
+
+[[IgnoredVulns]]
+id = "GHSA-r6q2-hw4h-h46w"
+reason = "tar@6.2.1。serverless@3 が ^6.1.15 で直接依存"
+
+[[IgnoredVulns]]
+id = "GHSA-w5hq-g745-h8pq"
+reason = "uuid 8.x / 9.x。serverless / @serverless/dashboard-plugin / aws-sdk から複数バージョンが入る"
