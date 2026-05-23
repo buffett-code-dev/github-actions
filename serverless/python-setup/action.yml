@@ -7,7 +7,8 @@ author: 'buffett-code-dev'
 #
 # 依存は本ディレクトリの package.json / package-lock.json で固定し、`npm ci` でインストールする。
 # これにより safe-chain の minimum package age チェックで transitive dependency の最新版を引いて
-# ブロックされる事象を防ぐ。バージョンの更新は Dependabot 経由で package-lock.json を更新する。
+# ブロックされる事象を防ぐ。Serverless Framework は廃止予定のため、本アクションの依存は塩漬けとし
+# Dependabot の対象外とする (必要に応じて廃止までの間に手動更新)。
 
 inputs:
   node-version:
