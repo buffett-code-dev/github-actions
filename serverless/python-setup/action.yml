@@ -4,25 +4,17 @@ author: 'buffett-code-dev'
 
 # Note: https://github.com/serverless/github-action は利用せず、直接セットアップする
 # serverless/github-action@2 は Python runtime を持たないため、serverless-python-requirements が動作しない
-
+#
+# 依存は本ディレクトリの package.json / package-lock.json で固定し、`npm ci` でインストールする。
+# これにより safe-chain の minimum package age チェックで transitive dependency の最新版を引いて
+# ブロックされる事象を防ぐ。Serverless Framework は廃止予定のため、本アクションの依存は塩漬けとし
+# Dependabot の対象外とする (必要に応じて廃止までの間に手動更新)。
 
 inputs:
   node-version:
     description: 'Node.js version to setup'
     required: false
     default: '20'
-  serverless-version:
-    description: 'Serverless Framework version'
-    required: false
-    default: '2.72.4'
-  serverless-prune-plugin-version:
-    description: 'serverless-prune-plugin version'
-    required: false
-    default: '1.6.1'
-  serverless-python-requirements-version:
-    description: 'serverless-python-requirements version'
-    required: false
-    default: '5.4.0'
 
 runs:
   using: composite
@@ -39,8 +31,9 @@ runs:
 
     - name: Install serverless and plugins
       shell: bash
-      run: |
-        npm install --ignore-scripts \
-          serverless@${{ inputs.serverless-version }} \
-          serverless-prune-plugin@${{ inputs.serverless-prune-plugin-version }} \
-          serverless-python-requirements@${{ inputs.serverless-python-requirements-version }}
+      working-directory: ${{ github.action_path }}
+      run: npm ci --ignore-scripts
+
+    - name: Link installed node_modules to workspace
+      shell: bash
+      run: ln -sfn "${{ github.action_path }}/node_modules" "${{ github.workspace }}/node_modules"
