@@ -88,6 +88,25 @@ updates:
     cooldown:
       default-days: 2
 
+  # Serverless Framework は廃止予定のため、依存ツリーは package-lock.json で塩漬けする。
+  # version 更新 PR は open-pull-requests-limit: 0 で抑制し、
+  # security update PR が serverless 系をメジャーアップさせるのを ignore で抑止する
+  # (PR #86 で npm エントリ未追加にしたが、security update は dependabot.yml 非依存で
+  # 発火するため、ここで明示的に ignore を設定する必要がある)。
+  - package-ecosystem: "npm"
+    directory: "./serverless/python-setup"
+    schedule:
+      interval: "weekly"
+      timezone: "Asia/Tokyo"
+    open-pull-requests-limit: 0
+    ignore:
+      - dependency-name: "serverless"
+        versions: [">= 4.0.0"]
+      - dependency-name: "serverless-prune-plugin"
+        versions: [">= 3.0.0"]
+      - dependency-name: "serverless-python-requirements"
+        versions: [">= 7.0.0"]
+
   - package-ecosystem: "github-actions"
     directory: ".github/workflows"
     schedule:
