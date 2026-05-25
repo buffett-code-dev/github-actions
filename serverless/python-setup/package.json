@@ -4,7 +4,7 @@
   "private": true,
   "description": "Pinned Serverless Framework toolchain for buffett-code-dev/github-actions/serverless/python-setup",
   "dependencies": {
-    "serverless": "3.38.0",
+    "serverless": "4.36.1",
     "serverless-prune-plugin": "2.1.0",
     "serverless-python-requirements": "6.1.2"
   }
