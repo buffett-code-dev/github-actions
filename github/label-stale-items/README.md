@@ -1,6 +1,6 @@
 # github/label-stale-items
 
-一定期間更新がないissueに自動的にラベルを付与するComposite Actionです。
+一定期間更新がないissue/PRに自動的にラベルを付与するComposite Actionです。
 
 ## 使用方法
 
@@ -18,9 +18,10 @@
 | `repo-token` | | `${{ github.token }}` | GitHubトークン |
 | `days-before-issue-stale` | | `60` | issueをstaleとマークするまでの日数 |
 | `days-before-issue-close` | | `-1` | stale後にissueをcloseするまでの日数 (`-1`でcloseしない) |
-| `stale-issue-label` | | `stale` | 付与するラベル名 |
-| `days-before-pr-stale` | | `-1` | PRをstaleとマークするまでの日数 (`-1`で無効) |
-| `days-before-pr-close` | | `-1` | stale後にPRをcloseするまでの日数 (`-1`でcloseしない) |
+| `stale-issue-label` | | `stale` | issueに付与するラベル名 |
+| `days-before-pr-stale` | | `14` | PRをstaleとマークするまでの日数 (`-1`で無効) |
+| `days-before-pr-close` | | `21` | stale後にPRをcloseするまでの日数 (`-1`でcloseしない) |
+| `stale-pr-label` | | `stale` | PRに付与するラベル名 |
 
 ## 使用例
 
@@ -58,14 +59,12 @@ jobs:
     days-before-issue-close: 7  # stale後7日でclose
 ```
 
-### PRにも適用
+### PRをstale対象から外す
 
 ```yaml
 - uses: buffett-code-dev/github-actions/github/label-stale-items@main
   with:
-    days-before-issue-stale: 60
-    days-before-pr-stale: 30  # PRは30日でstale
-    days-before-pr-close: 14  # stale後14日でclose
+    days-before-pr-stale: -1  # PRは対象外
 ```
 
 ### 手動実行も可能にする
@@ -97,8 +96,8 @@ jobs:
 
 ## 注意事項
 
-- **デフォルトではPRへの適用は無効です** (`days-before-pr-stale: -1`)
-- **デフォルトでは自動closeは無効です** (`days-before-issue-close: -1`)
+- **デフォルトではissueの自動closeは無効です** (`days-before-issue-close: -1`)
+- **デフォルトではPRはstale後21日でcloseされます** (`days-before-pr-close: 21`)
 - staleラベルが付いたissue/PRに新しいコメントやアクティビティがあると、ラベルは自動的に削除されます
 
 ## 前提条件
