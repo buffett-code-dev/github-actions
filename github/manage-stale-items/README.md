@@ -31,7 +31,7 @@ name: Manage stale items
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # 毎日0時に実行
+    - cron: '0 0 * * 1'  # 毎週月曜日に実行
 
 jobs:
   stale:
@@ -76,7 +76,7 @@ name: Manage stale items
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 0 * * 1'
   workflow_dispatch:  # 手動実行を許可
 
 jobs:
