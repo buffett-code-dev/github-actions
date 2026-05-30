@@ -31,7 +31,7 @@
 - **[claude-code/pr-review](claude-code/pr-review/)** - Claude CodeによるPRレビューとIssue対応
 - **[docker/build](docker/build/)** - Dockerイメージのビルドとプッシュ
 - **[github/dependabot-auto-merge](github/dependabot-auto-merge/)** - Dependabot PRの自動マージ
-- **[github/label-stale-items](github/label-stale-items/)** - 古いissueへのラベル付与
+- **[github/label-stale-items](github/label-stale-items/)** - 古いissue/PRへのラベル付与
 - **[github/typos](github/typos/)** - タイポチェック
 - **[serverless/python-setup](serverless/python-setup/)** - Python環境でのServerless Frameworkセットアップ
 

@@ -1,5 +1,5 @@
-name: 'Label Inactive Issues'
-description: 'Add stale label to issues that have been inactive for specified days'
+name: 'Label Inactive Items'
+description: 'Add stale label to issues and PRs that have been inactive for specified days'
 author: 'buffett-code-dev'
 
 inputs:
@@ -21,11 +21,15 @@ inputs:
     required: false
   days-before-pr-stale:
     description: 'Days before marking PR as stale'
-    default: '-1'
+    default: '14'
+    required: false
+  stale-pr-label:
+    description: 'Label to add when PR is stale'
+    default: 'stale'
     required: false
   days-before-pr-close:
     description: 'Days before closing stale PR'
-    default: '-1'
+    default: '21'
     required: false
 
 runs:
@@ -38,8 +42,9 @@ runs:
         days-before-issue-stale: ${{ inputs.days-before-issue-stale }}
         days-before-issue-close: ${{ inputs.days-before-issue-close }}
         stale-issue-label: ${{ inputs.stale-issue-label }}
-        stale-issue-message: 'このissueは${{ inputs.days-before-issue-stale }}日以上経過しています。'
+        stale-issue-message: 'このissueは${{ inputs.days-before-issue-stale }}日以上放置されています。'
         days-before-pr-stale: ${{ inputs.days-before-pr-stale }}
         days-before-pr-close: ${{ inputs.days-before-pr-close }}
-        stale-pr-message: 'このPRは${{ inputs.days-before-pr-stale }}日以上経過しています。'
+        stale-pr-label: ${{ inputs.stale-pr-label }}
+        stale-pr-message: 'このPRは${{ inputs.days-before-pr-stale }}日以上放置されています。'
 
