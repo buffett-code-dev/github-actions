@@ -42,9 +42,9 @@ runs:
         days-before-issue-stale: ${{ inputs.days-before-issue-stale }}
         days-before-issue-close: ${{ inputs.days-before-issue-close }}
         stale-issue-label: ${{ inputs.stale-issue-label }}
-        stale-issue-message: 'このissueは${{ inputs.days-before-issue-stale }}日以上経過しています。'
+        stale-issue-message: 'このissueは${{ inputs.days-before-issue-stale }}日以上放置されています。'
         days-before-pr-stale: ${{ inputs.days-before-pr-stale }}
         days-before-pr-close: ${{ inputs.days-before-pr-close }}
         stale-pr-label: ${{ inputs.stale-pr-label }}
-        stale-pr-message: 'このPRは${{ inputs.days-before-pr-stale }}日以上経過しています。'
+        stale-pr-message: 'このPRは${{ inputs.days-before-pr-stale }}日以上放置されています。'
 
