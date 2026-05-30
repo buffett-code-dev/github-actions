@@ -37,6 +37,9 @@ on:
 jobs:
   stale:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
     steps:
       - uses: buffett-code-dev/github-actions/github/label-stale-items@main
 ```
@@ -80,6 +83,9 @@ on:
 jobs:
   stale:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
     steps:
       - uses: buffett-code-dev/github-actions/github/label-stale-items@main
         with:
@@ -103,4 +109,6 @@ jobs:
 ## 前提条件
 
 - リポジトリに指定したラベル (`stale`など) が存在すること (存在しない場合は自動作成されます)
-- ワークフローが`issues: write`権限を持っていること (通常は自動的に付与されます)
+- ワークフローが以下の権限を持っていること:
+  - `issues: write` (issueにラベル付与・close するため)
+  - `pull-requests: write` (PRにラベル付与・close するため、PR対象時)
