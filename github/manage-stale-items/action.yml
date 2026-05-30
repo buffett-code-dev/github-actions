@@ -1,5 +1,5 @@
-name: 'Label Inactive Items'
-description: 'Add stale label to issues and PRs that have been inactive for specified days'
+name: 'Manage Stale Items'
+description: 'Add stale label and close stale issues and PRs that have been inactive for specified days'
 author: 'buffett-code-dev'
 
 inputs:
@@ -29,7 +29,7 @@ inputs:
     required: false
   days-before-pr-close:
     description: 'Days before closing stale PR'
-    default: '-1'
+    default: '21'
     required: false
 
 runs:
@@ -47,4 +47,3 @@ runs:
         days-before-pr-close: ${{ inputs.days-before-pr-close }}
         stale-pr-label: ${{ inputs.stale-pr-label }}
         stale-pr-message: 'このPRは${{ inputs.days-before-pr-stale }}日以上放置されています。'
-
