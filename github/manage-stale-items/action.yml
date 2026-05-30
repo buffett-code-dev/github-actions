@@ -29,7 +29,7 @@ inputs:
     required: false
   days-before-pr-close:
     description: 'Days before closing stale PR'
-    default: '21'
+    default: '14'
     required: false
 
 runs:
