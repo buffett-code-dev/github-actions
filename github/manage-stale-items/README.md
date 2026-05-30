@@ -1,16 +1,13 @@
-# github/label-stale-items
+# github/manage-stale-items
 
-> **⚠️ 非推奨 (DEPRECATED)**: このアクションは [`github/manage-stale-items`](../manage-stale-items/) に置き換えられました。新規利用は `manage-stale-items` を使用してください。`label-stale-items` は staleラベル付与のみを行い、自動closeは行いません (`days-before-*-close` のデフォルトは `-1`)。
-
-一定期間更新がないissue/PRに自動的にラベルを付与するComposite Actionです。closeは行いません。
+一定期間更新がないissue/PRに対してstaleラベルを付与し、さらに一定期間放置されたものを自動closeするComposite Actionです。
 
 ## 使用方法
 
 ```yaml
-- uses: buffett-code-dev/github-actions/github/label-stale-items@main
+- uses: buffett-code-dev/github-actions/github/manage-stale-items@main
   with:
     repo-token: ${{ secrets.GITHUB_TOKEN }}
-    days-before-issue-stale: 60
 ```
 
 ## パラメータ
@@ -22,7 +19,7 @@
 | `days-before-issue-close` | | `-1` | stale後にissueをcloseするまでの日数 (`-1`でcloseしない) |
 | `stale-issue-label` | | `stale` | issueに付与するラベル名 |
 | `days-before-pr-stale` | | `14` | PRをstaleとマークするまでの日数 (`-1`で無効) |
-| `days-before-pr-close` | | `-1` | stale後にPRをcloseするまでの日数 (`-1`でcloseしない) |
+| `days-before-pr-close` | | `21` | stale後にPRをcloseするまでの日数 (`-1`でcloseしない) |
 | `stale-pr-label` | | `stale` | PRに付与するラベル名 |
 
 ## 使用例
@@ -30,7 +27,7 @@
 ### 基本的な使用方法 (定期実行)
 
 ```yaml
-name: Label stale items
+name: Manage stale items
 
 on:
   schedule:
@@ -43,22 +40,22 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      - uses: buffett-code-dev/github-actions/github/label-stale-items@main
+      - uses: buffett-code-dev/github-actions/github/manage-stale-items@main
 ```
 
 ### カスタム設定
 
 ```yaml
-- uses: buffett-code-dev/github-actions/github/label-stale-items@main
+- uses: buffett-code-dev/github-actions/github/manage-stale-items@main
   with:
     days-before-issue-stale: 90  # 90日間更新なしでstale
     stale-issue-label: '古いissue'  # カスタムラベル
 ```
 
-### Stale後に自動クローズ
+### issueもstale後に自動クローズ
 
 ```yaml
-- uses: buffett-code-dev/github-actions/github/label-stale-items@main
+- uses: buffett-code-dev/github-actions/github/manage-stale-items@main
   with:
     days-before-issue-stale: 60
     days-before-issue-close: 7  # stale後7日でclose
@@ -67,7 +64,7 @@ jobs:
 ### PRをstale対象から外す
 
 ```yaml
-- uses: buffett-code-dev/github-actions/github/label-stale-items@main
+- uses: buffett-code-dev/github-actions/github/manage-stale-items@main
   with:
     days-before-pr-stale: -1  # PRは対象外
 ```
@@ -75,7 +72,7 @@ jobs:
 ### 手動実行も可能にする
 
 ```yaml
-name: Label stale items
+name: Manage stale items
 
 on:
   schedule:
@@ -89,9 +86,7 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      - uses: buffett-code-dev/github-actions/github/label-stale-items@main
-        with:
-          days-before-issue-stale: 60
+      - uses: buffett-code-dev/github-actions/github/manage-stale-items@main
 ```
 
 ## 動作
@@ -104,8 +99,8 @@ jobs:
 
 ## 注意事項
 
-- **デフォルトでは自動closeは無効です** (`days-before-issue-close: -1`, `days-before-pr-close: -1`)
-- close も行いたい場合は [`github/manage-stale-items`](../manage-stale-items/) の利用を推奨します
+- **デフォルトではissueの自動closeは無効です** (`days-before-issue-close: -1`)
+- **デフォルトではPRはstale後21日でcloseされます** (`days-before-pr-close: 21`)
 - staleラベルが付いたissue/PRに新しいコメントやアクティビティがあると、ラベルは自動的に削除されます
 
 ## 前提条件
