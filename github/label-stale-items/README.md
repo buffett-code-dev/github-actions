@@ -28,7 +28,7 @@
 ### 基本的な使用方法 (定期実行)
 
 ```yaml
-name: Label stale issues
+name: Label stale items
 
 on:
   schedule:
@@ -73,7 +73,7 @@ jobs:
 ### 手動実行も可能にする
 
 ```yaml
-name: Label stale issues
+name: Label stale items
 
 on:
   schedule:
