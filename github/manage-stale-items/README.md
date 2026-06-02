@@ -19,7 +19,7 @@
 | `days-before-issue-close` | | `-1` | stale後にissueをcloseするまでの日数 (`-1`でcloseしない) |
 | `stale-issue-label` | | `stale` | issueに付与するラベル名 |
 | `days-before-pr-stale` | | `14` | PRをstaleとマークするまでの日数 (`-1`で無効) |
-| `days-before-pr-close` | | `21` | stale後にPRをcloseするまでの日数 (`-1`でcloseしない) |
+| `days-before-pr-close` | | `14` | stale後にPRをcloseするまでの日数 (`-1`でcloseしない) |
 | `stale-pr-label` | | `stale` | PRに付与するラベル名 |
 
 ## 使用例
@@ -100,7 +100,7 @@ jobs:
 ## 注意事項
 
 - **デフォルトではissueの自動closeは無効です** (`days-before-issue-close: -1`)
-- **デフォルトではPRはstale後21日でcloseされます** (`days-before-pr-close: 21`)
+- **デフォルトではPRはstale後14日でcloseされます** (`days-before-pr-close: 14`)
 - staleラベルが付いたissue/PRに新しいコメントやアクティビティがあると、ラベルは自動的に削除されます
 
 ## 前提条件
