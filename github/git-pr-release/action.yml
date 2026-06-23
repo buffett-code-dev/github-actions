@@ -38,7 +38,7 @@ runs:
 
     - name: Setup Ruby
       if: ${{ steps.check-diff.outputs.diff_count != '0' }}
-      uses: ruby/setup-ruby@v1.310.0
+      uses: ruby/setup-ruby@v1.314.0
       with:
         ruby-version: '3.4'
 
