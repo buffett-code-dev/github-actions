@@ -41,14 +41,6 @@ updates:
       default-days: 2
 
   - package-ecosystem: "github-actions"
-    directory: "./github/dependabot-auto-merge"
-    schedule:
-      interval: "weekly"
-      timezone: "Asia/Tokyo"
-    cooldown:
-      default-days: 2
-
-  - package-ecosystem: "github-actions"
     directory: "./github/manage-stale-items"
     schedule:
       interval: "weekly"
