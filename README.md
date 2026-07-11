@@ -30,7 +30,6 @@
 - **[aws/lambda_function_update](aws/lambda_function_update/)** - Lambda関数のDockerイメージを更新
 - **[claude-code/pr-review](claude-code/pr-review/)** - Claude CodeによるPRレビューとIssue対応
 - **[docker/build](docker/build/)** - Dockerイメージのビルドとプッシュ
-- **[github/dependabot-auto-merge](github/dependabot-auto-merge/)** - Dependabot PRの自動マージ
 - **[github/manage-stale-items](github/manage-stale-items/)** - 古いissue/PRへのラベル付与と自動close
 - **[github/typos](github/typos/)** - タイポチェック
 - **[serverless/python-setup](serverless/python-setup/)** - Python環境でのServerless Frameworkセットアップ
@@ -63,4 +62,3 @@
 
 - 各アクションディレクトリが`.github/dependabot.yml`で管理されています
 - 更新スケジュール: 毎週月曜日 (Asia/Tokyoタイムゾーン)
-- パッチバージョン更新は自動マージされます ([dependabot-auto-merge](github/dependabot-auto-merge/)を使用)
