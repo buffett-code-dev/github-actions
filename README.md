@@ -30,7 +30,10 @@
 - **[aws/lambda_function_update](aws/lambda_function_update/)** - Lambda関数のDockerイメージを更新
 - **[claude-code/pr-review](claude-code/pr-review/)** - Claude CodeによるPRレビューとIssue対応
 - **[docker/build](docker/build/)** - Dockerイメージのビルドとプッシュ
+- **[github/create-release-reminder-issue](github/create-release-reminder-issue/)** - 未リリースのコミットがある場合にリリースリマインドIssueを作成
+- **[github/git-pr-release](github/git-pr-release/)** - staging→productionのリリースPRを自動作成 (git-pr-release)
 - **[github/manage-stale-items](github/manage-stale-items/)** - 古いissue/PRへのラベル付与と自動close
+- **[github/release-please](github/release-please/)** - release-pleaseによるリリースPR・GitHubリリースの自動作成
 - **[github/typos](github/typos/)** - タイポチェック
 - **[serverless/python-setup](serverless/python-setup/)** - Python環境でのServerless Frameworkセットアップ
 
