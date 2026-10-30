@@ -21,7 +21,8 @@ buffett-code-devプロジェクト内の複数のリポジトリで共通的に�
 ├── docker/                 # Docker関連のアクション
 │   └── build/              # Dockerビルド・プッシュ
 └── github/                 # GitHub関連のアクション
-    └── manage-stale-items/     # 古いissue/PRへのラベル付与と自動close
+    ├── manage-stale-items/     # 古いissue/PRへのラベル付与と自動close
+    └── safe-chain-urgent-patch-notify/  # safe-chainで止まる緊急の脆弱性修正をSlackに通知
 ```
 
 ### Composite Actionsの仕様
@@ -48,6 +49,10 @@ buffett-code-devプロジェクト内の複数のリポジトリで共通的に�
   - issueはデフォルトで60日でstaleラベル付与、自動closeは無効
   - PRはデフォルトで14日でstaleラベル付与、21日でclose
   - `issues: write`と`pull-requests: write`の権限が必要
+- **safe-chain-urgent-patch-notify**:
+  - 判定ロジックは`script.js`に記述し、`actions/github-script`から呼び出す
+  - GHSAはGitHub Advisory Databaseの公開API（`GET /advisories`）で取得するため、Dependabotアラートの権限は不要
+  - Slackの通知はIncoming Webhookへ直接POSTする
 
 ## 開発時の注意点
 

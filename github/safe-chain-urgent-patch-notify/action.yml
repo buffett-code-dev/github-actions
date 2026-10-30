@@ -1,0 +1,48 @@
+name: 'Safe-chain Urgent Patch Notify'
+description: 'safe-chain の最小公開期間で止まる npm パッケージのうち、緊急性の高い脆弱性修正を Slack に通知する'
+author: 'buffett-code-dev'
+
+inputs:
+  slack-webhook-url:
+    description: '通知先の Slack Incoming Webhook URL'
+    required: true
+  lockfile:
+    description: 'npm の lockfile のパス'
+    required: false
+    default: 'package-lock.json'
+  minimum-age-hours:
+    description: 'safe-chain の最小公開期間（時間）'
+    required: false
+    default: '48'
+  severities:
+    description: '通知対象とする GHSA の深刻度（カンマ区切り）。CISA KEV 掲載の脆弱性は深刻度に関係なく通知する'
+    required: false
+    default: 'critical'
+  github-token:
+    description: 'GitHub API の呼び出しに使うトークン'
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  urgent:
+    description: '緊急性の高い更新があれば true'
+    value: ${{ steps.check.outputs.urgent }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Check urgent patches
+      id: check
+      uses: actions/github-script@v9
+      env:
+        # uses で呼ぶステップの中では GITHUB_ACTION_PATH が github-script 側のパスになるため、このアクションのパスを明示的に指定する
+        SCRIPT_PATH: ${{ github.action_path }}/script.js
+        INPUT_SLACK_WEBHOOK_URL: ${{ inputs.slack-webhook-url }}
+        INPUT_LOCKFILE: ${{ inputs.lockfile }}
+        INPUT_MINIMUM_AGE_HOURS: ${{ inputs.minimum-age-hours }}
+        INPUT_SEVERITIES: ${{ inputs.severities }}
+      with:
+        github-token: ${{ inputs.github-token }}
+        script: |
+          const run = require(process.env.SCRIPT_PATH);
+          await run({ github, context, core });
