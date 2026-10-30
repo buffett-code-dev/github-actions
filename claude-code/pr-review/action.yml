@@ -14,6 +14,10 @@ inputs:
     description: 'チェックアウト時のfetch-depth'
     required: false
     default: '1'
+  github_token:
+    description: 'GitHubの操作に使うトークン。渡すとClaude GitHub Appのトークンを取りに行かないので、呼び出し側でid-token: writeが不要になる。空のときは従来どおりGitHub Appのトークンを使う'
+    required: false
+    default: ''
 
 runs:
   using: 'composite'
@@ -29,5 +33,6 @@ runs:
       with:
         anthropic_api_key: ${{ inputs.anthropic_api_key }}
         allowed_bots: ${{ inputs.allowed_bots }}
+        github_token: ${{ inputs.github_token }}
         claude_args: |
           --model claude-sonnet-5

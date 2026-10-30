@@ -51,6 +51,7 @@ jobs:
 | `timeout_minutes` | No | `60` | タイムアウト時間（分） |
 | `allowed_bots` | No | (未設定) | 許可するボットのリスト（カンマ区切り） |
 | `checkout_fetch_depth` | No | `1` | チェックアウト時のfetch-depth |
+| `github_token` | No | (未設定) | GitHubの操作に使うトークン。渡すと `id-token: write` が不要になる（下の「`id-token: write` を外す」を参照） |
 
 ## カスタマイズ例
 
@@ -72,6 +73,28 @@ jobs:
   with:
     anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
     allowed_bots: 'buffett-code-bot,dependabot[bot]'
+```
+
+### `id-token: write` を外す
+
+`github_token` を渡すと、`id-token: write` を付けずに動かせる。`id-token: write` があると、ジョブの中で動くものなら何でも AWS などのロールを引き受けるためのトークンを取れるので、要らなければ付けない方がよい。
+
+渡したときの違い:
+- コメントの投稿者が `github-actions[bot]` になる
+- このジョブからの push では workflow が動かない
+
+```yaml
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      actions: read
+    steps:
+      - name: Run Claude PR Review
+        uses: buffett-code-dev/github-actions/claude-code/pr-review@main
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ## 必要なシークレット
