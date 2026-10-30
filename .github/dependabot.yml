@@ -79,3 +79,11 @@ updates:
       timezone: "Asia/Tokyo"
     cooldown:
       default-days: 2
+
+  - package-ecosystem: "github-actions"
+    directory: "./github/safe-chain-urgent-patch-notify"
+    schedule:
+      interval: "weekly"
+      timezone: "Asia/Tokyo"
+    cooldown:
+      default-days: 2
