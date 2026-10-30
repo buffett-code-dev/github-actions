@@ -77,9 +77,11 @@ jobs:
 
 ### `id-token: write` を外す
 
-`github_token` を渡さないと、`anthropics/claude-code-action` は OIDC トークンを Claude GitHub App のトークンに交換するため、`id-token: write` が必要になる。`id-token: write` があると、同じジョブの中では AWS 向けの OIDC トークンも取れるので、そのリポジトリの AWS ロールが既定のブランチなどを信頼していると、そのロールに届いてしまう。
+`github_token` を渡すと、`id-token: write` を付けずに動かせる。`id-token: write` があると、ジョブの中で動くものなら何でも AWS などのロールを引き受けるためのトークンを取れるので、要らなければ付けない方がよい。
 
-`GITHUB_TOKEN` を渡すと `id-token: write` が要らなくなる。コメントの投稿者は `github-actions[bot]` になり、Claude が push したコミットでは workflow が動かない（`GITHUB_TOKEN` による push の仕様）。
+渡したときの違い:
+- コメントの投稿者が `github-actions[bot]` になる
+- このジョブからの push では workflow が動かない
 
 ```yaml
     permissions:
