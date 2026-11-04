@@ -33,6 +33,7 @@
 - **[github/git-pr-release](github/git-pr-release/)** - staging→productionのリリースPRを自動作成 (git-pr-release)
 - **[github/manage-stale-items](github/manage-stale-items/)** - 古いissue/PRへのラベル付与と自動close
 - **[github/release-please](github/release-please/)** - release-pleaseによるリリースPR・GitHubリリースの自動作成
+- **[github/safe-chain-urgent-patch-notify](github/safe-chain-urgent-patch-notify/)** - safe-chainの最小公開期間で止まる緊急の脆弱性修正をSlackに通知
 - **[github/typos](github/typos/)** - タイポチェック
 
 各アクションの詳細な使用方法は、それぞれのディレクトリ内のREADMEを参照してください。
