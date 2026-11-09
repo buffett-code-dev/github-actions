@@ -9,6 +9,14 @@ updates:
       default-days: 2
 
   - package-ecosystem: "github-actions"
+    directory: "./claude-code/pr-review-on-label"
+    schedule:
+      interval: "weekly"
+      timezone: "Asia/Tokyo"
+    cooldown:
+      default-days: 2
+
+  - package-ecosystem: "github-actions"
     directory: "./aws/credentials"
     schedule:
       interval: "weekly"
