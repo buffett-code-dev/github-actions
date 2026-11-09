@@ -42,5 +42,12 @@ jobs:
 | --- | --- | --- |
 | `anthropic_api_key` | はい | Claude Code Action が使用する Anthropic API キー |
 | `github_token` | はい | PR の読み取りとレビューコメントの投稿に使うジョブの GitHub トークン |
+| `self_merge_policy_path` | いいえ | ベースコミットにあるセルフマージガイドラインのリポジトリ相対パス。既定値は空文字列 |
 
 Action はベースコミットをチェックアウトし、GitHub CLI で対象 PR の概要と差分を取得します。レビュー結果は `pass`、`changes_requested`、`needs_human` のいずれかを先頭に付けて、PR に投稿します。
+
+## セルフマージの事前判定
+
+呼び出し元の `with` に `self_merge_policy_path: docs/development/self-merge-guidelines.md` のように、リポジトリで管理するガイドラインのパスを指定できます。Claude はベースコミットのガイドラインを読み、対象コミット SHA とセルフマージの事前判定をコードレビューと同じコメントに記載します。
+
+パスを省略した場合は通常のコードレビューを行います。ガイドラインを取得できない場合や判定対象のコミットが更新されていた場合は、事前判定を要人間確認として報告します。
