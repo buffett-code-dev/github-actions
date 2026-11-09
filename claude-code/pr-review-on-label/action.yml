@@ -43,7 +43,9 @@ runs:
           gh pr view に同じ PR 番号とリポジトリおよび --json headRefOid を指定し、最新 SHA を確認してください。
           ガイドライン、差分、最新 SHA を確認できない場合や、対象 SHA と最新 SHA が異なる場合は、
           セルフマージは「要人間確認」とし、未確認の項目を示してください。
-          必要な情報を確認できたら、まず全レベル共通の禁止条件を適用し、該当する場合は「対象外」として根拠を示してください。
+          PR が `{0}` または判定基準として参照する文書を変更している場合も、追加・削除・改名を含め、
+          セルフマージは「要人間確認」とし、変更された文書を示してください。
+          上記の要人間確認に該当しなければ、まず全レベル共通の禁止条件を適用し、該当する場合は「対象外」として根拠を示してください。
           該当しない場合は、ガイドラインにレベル別の条件があれば各レベルについて
           「対象」「対象外」「要人間確認」のいずれかを示してください。著者のレベルは推測しないでください。
           レベル別の条件がなければ、PR 全体について同じ選択肢で判定してください。
@@ -53,4 +55,4 @@ runs:
           inputs.self_merge_policy_path, github.event.pull_request.head.sha) || '' }}
         claude_args: |
           --model claude-sonnet-5
-          --allowedTools "Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*)${{ inputs.self_merge_policy_path != '' && format(',Read(./{0})', inputs.self_merge_policy_path) || '' }}"
+          --allowedTools "Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*)"
