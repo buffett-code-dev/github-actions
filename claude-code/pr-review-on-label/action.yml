@@ -9,6 +9,10 @@ inputs:
   github_token:
     description: PR の読み取りとレビューコメントの投稿に使う GitHub トークン
     required: true
+  ci_workflow:
+    description: 成功を確認する pull_request ワークフローのファイル名または ID。空文字列の場合は確認しない
+    required: false
+    default: ''
   self_merge_policy_path:
     description: ベースコミットから読み込むセルフマージガイドラインのリポジトリ相対パス
     required: false
@@ -17,6 +21,51 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: 対象コミットの CI 成功を確認
+      id: ci-gate
+      if: inputs.ci_workflow != ''
+      shell: ruby {0}
+      env:
+        GH_TOKEN: ${{ inputs.github_token }}
+        CI_WORKFLOW: ${{ inputs.ci_workflow }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
+      run: |
+        require 'json'
+        require 'open3'
+
+        repo = ENV.fetch('GITHUB_REPOSITORY')
+        pr_number = Integer(ENV.fetch('PR_NUMBER'))
+        head_sha = ENV.fetch('PR_HEAD_SHA')
+        base_ref = ENV.fetch('PR_BASE_REF')
+        workflow = ENV.fetch('CI_WORKFLOW')
+
+        runs_json, status = Open3.capture2(
+          'gh', 'api', "repos/#{repo}/actions/workflows/#{workflow}/runs", '--method', 'GET', '--paginate', '--slurp',
+          '-f', 'event=pull_request', '-f', "head_sha=#{head_sha}"
+        )
+        abort '::error::CI の実行結果を取得できませんでした。' unless status.success?
+
+        runs = JSON.parse(runs_json).flat_map { |page| page.fetch('workflow_runs') }
+        latest_run = runs.select do |run|
+          run.fetch('pull_requests').any? { |pr| pr.fetch('number') == pr_number && pr.dig('base', 'ref') == base_ref }
+        end.max_by { |run| run.fetch('run_number') }
+        conclusion = latest_run.fetch('conclusion') if latest_run&.fetch('status') == 'completed'
+        unless conclusion == 'success'
+          result = conclusion || '未完了または未実行'
+          abort "::error::対象コミットの CI が成功していません（#{result}）。" \
+                'CI 成功後に claude-review ラベルを付け直してください。'
+        end
+
+        pr_json, status = Open3.capture2('gh', 'api', "repos/#{repo}/pulls/#{pr_number}")
+        abort '::error::PR の最新状態を取得できませんでした。' unless status.success?
+
+        current_pr = JSON.parse(pr_json)
+        unless current_pr.dig('head', 'sha') == head_sha && current_pr.dig('base', 'ref') == base_ref
+          abort '::error::ラベル付与後に PR が更新されました。最新の CI 成功後に claude-review ラベルを付け直してください。'
+        end
+
     # Claude Code Action の作業ディレクトリとしてベース側を使う。
     - uses: actions/checkout@v7
       with:

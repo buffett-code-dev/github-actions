@@ -1,0 +1,26 @@
+name: Claude Review Tests
+
+on:
+  pull_request:
+    paths:
+      - 'claude-code/pr-review-on-label/**'
+      - '.github/workflows/claude-review-tests.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'claude-code/pr-review-on-label/**'
+      - '.github/workflows/claude-review-tests.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  ci-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
+      - name: Test CI gate
+        run: ruby claude-code/pr-review-on-label/ci_gate_test.rb
