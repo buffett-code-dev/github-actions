@@ -49,18 +49,32 @@ Claude Code の PR レビューには、2つの起動方法があります。起
 
 この Composite Action は、PR のベースコミットをチェックアウトして Claude を起動します。そのため、Claude が読み込む `CLAUDE.md` とセルフマージガイドラインは、PR による変更を含まない内容です。PR でこれらのファイルを変更しても、その PR のレビューには反映されません。
 
-## 変更したい内容と編集するファイル
+## 設定の変更方法
 
-| 変更したい内容 | 編集するファイル | 編集する箇所 |
+Claude Code の PR レビューの設定には、全リポジトリに共通する設定と、リポジトリごとの設定があります。どちらの設定を変更するかによって、編集するリポジトリが異なります。
+
+### 全リポジトリに共通する設定
+
+全リポジトリに共通する設定は、github-actions の `action.yml` に記述しています。
+
+| 変更する設定 | 編集するファイル | 編集する箇所 |
 | --- | --- | --- |
-| 使用するモデル | github-actions の両方の `action.yml` | `claude_args` の `--model` |
-| `anthropics/claude-code-action` のバージョン | github-actions の両方の `action.yml` | `uses: anthropics/claude-code-action@...` |
-| ラベルで起動したときのレビュー観点と出力形式 | github-actions の `claude-code/pr-review-on-label/action.yml` | `prompt` |
-| リポジトリ固有のレビュー観点 | 各リポジトリの `CLAUDE.md` | - |
-| 起動条件、ジョブの権限 | 各リポジトリの呼び出し元のワークフロー | `on`、`if`、`permissions` |
-| レビュー前に確認する CI、セルフマージガイドライン | 各リポジトリの呼び出し元のワークフロー | `with` の `ci_workflow`、`self_merge_policy_path` |
+| 使用するモデル | `claude-code/pr-review/action.yml`、`claude-code/pr-review-on-label/action.yml` | `claude_args` の `--model` |
+| `anthropics/claude-code-action` のバージョン | `claude-code/pr-review/action.yml`、`claude-code/pr-review-on-label/action.yml` | `uses: anthropics/claude-code-action@...` |
+| ラベルで起動したときのレビュー観点と出力形式 | `claude-code/pr-review-on-label/action.yml` | `prompt` |
 
 モデルと `anthropics/claude-code-action` のバージョンは、2つの `action.yml` にそれぞれ記述しています。どちらかを変更するときは、もう一方も同じ値にそろえるかを確認してください。
+
+### リポジトリごとの設定
+
+リポジトリごとの設定は、各リポジトリのファイルに記述しています。
+
+| 変更する設定 | 編集するファイル | 編集する箇所 |
+| --- | --- | --- |
+| リポジトリ固有のレビュー観点 | `CLAUDE.md` | - |
+| 起動条件、ジョブの権限 | 呼び出し元のワークフロー | `on`、`if`、`permissions` |
+| レビューの前に成功を確認する CI | 呼び出し元のワークフロー | `with` の `ci_workflow` |
+| セルフマージの判定に使うガイドライン | 呼び出し元のワークフロー | `with` の `self_merge_policy_path` |
 
 ## github-actions の変更時の注意
 
