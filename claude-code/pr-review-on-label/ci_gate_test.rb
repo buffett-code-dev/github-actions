@@ -222,6 +222,7 @@ class CiGateTest < Minitest::Test
     status.prs = [@pr]
     capture_io { status.finish }
     assert_includes status.comments.last, 'レビュー処理が完了'
+    assert_includes status.comments.last, '結果が投稿されていない場合は Actions のログを確認'
     assert_includes status.comments.last, @run['html_url']
     assert status.calls.any? { |endpoint, _, _| endpoint.end_with?('/comments/99') }
   end
@@ -293,7 +294,17 @@ class CiGateTest < Minitest::Test
     assert_includes steps.first.fetch('run'), 'review_status.rb" wait'
     assert_equal '${{ inputs.ci_wait_timeout_seconds }}', steps.first.fetch('env').fetch('CI_WAIT_TIMEOUT_SECONDS')
     assert_equal '${{ steps.ci-gate.outputs.comment_id }}', steps.last.fetch('env').fetch('COMMENT_ID')
-    assert_includes steps.last.fetch('if'), 'always()'
-    assert_equal 'claude', steps[-2].fetch('id')
+    normal = steps.find { |step| step['id'] == 'notify-finished' }
+    cancelled = steps.find { |step| step['id'] == 'notify-cancelled' }
+    assert_includes normal.fetch('if'), 'always() && !cancelled()'
+    assert_equal 'false', normal.fetch('env').fetch('JOB_CANCELLED')
+    assert_includes cancelled.fetch('if'), 'cancelled()'
+    assert_equal 'true', cancelled.fetch('env').fetch('JOB_CANCELLED')
+    assert_equal 'claude', steps[-3].fetch('id')
+    steps.each do |step|
+      step.fetch('env', {}).each_value do |value|
+        refute_match(/\b(always|failure|cancelled|success)\s*\(/, value, 'Status functions are only allowed in step-if')
+      end
+    end
   end
 end

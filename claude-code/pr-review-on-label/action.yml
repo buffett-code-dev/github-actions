@@ -110,7 +110,8 @@ runs:
           --allowedTools "Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*)"
 
     - name: レビューの終了状態を PR に通知
-      if: ${{ always() && steps.ci-gate.outcome == 'success' }}
+      id: notify-finished
+      if: ${{ always() && !cancelled() && steps.ci-gate.outcome == 'success' }}
       shell: bash
       env:
         ACTION_PATH: ${{ github.action_path }}
@@ -123,5 +124,23 @@ runs:
         CI_URL: ${{ steps.ci-gate.outputs.ci_url }}
         REVIEW_OUTCOME: ${{ steps.claude.outcome }}
         REVIEW_CONCLUSION: ${{ steps.claude.outputs.conclusion }}
-        JOB_CANCELLED: ${{ cancelled() }}
+        JOB_CANCELLED: 'false'
+      run: ruby "$ACTION_PATH/review_status.rb" finish
+
+    - name: レビューのキャンセルを PR に通知
+      id: notify-cancelled
+      if: ${{ cancelled() && steps.ci-gate.outcome == 'success' }}
+      shell: bash
+      env:
+        ACTION_PATH: ${{ github.action_path }}
+        GH_TOKEN: ${{ inputs.github_token }}
+        REVIEW_LABEL: ${{ github.event.label.name }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
+        COMMENT_ID: ${{ steps.ci-gate.outputs.comment_id }}
+        CI_URL: ${{ steps.ci-gate.outputs.ci_url }}
+        REVIEW_OUTCOME: ${{ steps.claude.outcome }}
+        REVIEW_CONCLUSION: ${{ steps.claude.outputs.conclusion }}
+        JOB_CANCELLED: 'true'
       run: ruby "$ACTION_PATH/review_status.rb" finish

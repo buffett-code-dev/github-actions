@@ -85,7 +85,7 @@ class ReviewStatus
     end
 
     verify_pr!
-    notify('レビュー処理が完了しました。別途投稿されたレビュー結果と対象コミット SHA を確認してください。')
+    notify('レビュー処理が完了しました。別途投稿されたレビュー結果と対象コミット SHA を確認してください。結果が投稿されていない場合は Actions のログを確認してください。')
   rescue StandardError, Interrupt => e
     report_error(e)
     raise
