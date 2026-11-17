@@ -19,8 +19,8 @@ jobs:
       github.event.label.name == 'claude-review' &&
       github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
-    # CI 待機45分と、レビュー・終了通知の時間を確保する
-    timeout-minutes: 65
+    # CI 待機10分と、レビュー・終了通知の時間を確保する
+    timeout-minutes: 30
     concurrency:
       group: claude-review-${{ github.event.pull_request.number }}
       cancel-in-progress: true
@@ -35,7 +35,7 @@ jobs:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           github_token: ${{ github.token }}
           ci_workflow: ci.yml
-          ci_wait_timeout_seconds: '2700'
+          ci_wait_timeout_seconds: '600'
           ci_start_timeout_seconds: '300'
           ci_poll_interval_seconds: '30'
           ci_base_branches: development,master
@@ -50,7 +50,7 @@ jobs:
 | `anthropic_api_key` | はい | Claude Code Action が使用する Anthropic API キー |
 | `github_token` | はい | PR の読み取りとレビューコメントの投稿に使うジョブの GitHub トークン |
 | `ci_workflow` | いいえ | 成功を確認する `pull_request` ワークフローのファイル名（例: `ci.yml`）または ID。既定値は空文字列（確認なし） |
-| `ci_wait_timeout_seconds` | いいえ | CI 完了の最大待機秒数。正の整数、既定値 `2700`（45分） |
+| `ci_wait_timeout_seconds` | いいえ | CI 完了の最大待機秒数。正の整数、既定値 `600`（10分） |
 | `ci_start_timeout_seconds` | いいえ | 対象 CI が未作成の場合の開始猶予秒数。正の整数、既定値 `300`（5分） |
 | `ci_poll_interval_seconds` | いいえ | CI の確認間隔秒数。正の整数、既定値 `30` |
 | `ci_base_branches` | いいえ | CI の対象ベースブランチのカンマ区切り一覧。既定値は空文字列（制限なし） |
@@ -73,15 +73,15 @@ Action はベースコミットをチェックアウトし、GitHub CLI で対�
 
 `ci_workflow` を指定すると、チェックアウトや Claude の起動前に、ラベル付与時の PR 番号・head SHA・ベースブランチに一致する最新のワークフロー実行が成功していることを確認します。CI を複数回実行した場合は最新の実行を優先し、再実行中もレビューを開始しません。確認対象は `pull_request` イベントの実行です。
 
-CI が未完了なら、既定で30秒間隔・最大45分待ち、成功した時点で自動でレビューを開始します。CI が未作成の場合は、開始直後の遅延を考慮して最大5分待ちます。`ci_base_branches` の対象外は待機せず、理由を PR に通知して失敗として終了します。CI を再実行した場合も、最新の実行が完了するまで待ちます。
+CI が未完了なら、既定で30秒間隔・最大10分待ち、成功した時点で自動でレビューを開始します。CI が未作成の場合は、開始直後の遅延を考慮して最大5分待ちます。`ci_base_branches` の対象外は待機せず、理由を PR に通知して失敗として終了します。CI を再実行した場合も、最新の実行が完了するまで待ちます。
 
 ラベル付与時に状態コメントを作成し、同じコメントを「CI 開始待ち」「CI 完了待ち」「レビュー中」「レビュー処理完了」または具体的なエラーに更新します。コメントには対象 SHA と Actions のリンク、対象 CI が見つかればそのリンクも記載します。レビュー結果は Claude が別のコメントに投稿します。状態コメントは依頼ごとに1件とし、以前の実行の終了通知が新しい依頼の状態を上書きしないようにします。
 
 CI 失敗・キャンセル・タイムアウト・開始猶予超過・API エラーでは理由を通知し、Action を失敗させます。待機中とレビュー開始前に PR の状態を取得し、head SHA・ベースブランチの変更、PR のクローズ、依頼ラベルの取り外しがあれば終了します。Claude にも差分取得前と投稿直前の対象 SHA・ベースブランチの確認を指示し、レビュー処理の終了後にも再確認します。追加 push 後やエラーの解消後はラベルを外して付け直してください。手元で CI 成功を待つ必要はありません。
 
-ジョブ全体の `timeout-minutes` は CI 待機上限にレビューと終了通知の余裕を加えて指定してください（上の例は65分）。待機の期限はスクリプト内で管理するため、期限超過時も状態通知を行います。ジョブの強制終了や runner の停止、GitHub API の障害時には通知できない場合があります。キャンセル通知は可能な範囲で行います。
+ジョブ全体の `timeout-minutes` は CI 待機上限にレビューと終了通知の余裕を加えて指定してください（上の例は30分）。待機の期限はスクリプト内で管理するため、期限超過時も状態通知を行います。ジョブの強制終了や runner の停止、GitHub API の障害時には通知できない場合があります。キャンセル通知は可能な範囲で行います。
 
-待機中も runner を使用し、Actions の実行時間を消費します。上記の例の65分はジョブ全体の上限です。`ci_wait_timeout_seconds` は利用リポジトリの CI 所要時間と待機コストに応じて調整してください。
+待機中も runner を使用し、Actions の実行時間を消費します。上記の例の30分はジョブ全体の上限です。`ci_wait_timeout_seconds` は利用リポジトリの CI 所要時間と待機コストに応じて調整してください。
 
 ポーリング1回につき PR の状態と CI 実行一覧の取得で最低2回 API を呼びます。30秒間隔では1件あたり約240回/時（ページネーションと通知の更新分は別）となり、複数 PR の同時待機では API のレート制限に注意が必要です。必要に応じて `ci_poll_interval_seconds` を60秒以上に設定してください。レート制限を含む API エラーは自動再試行せず、Action を失敗させます。状態通知にも同じ API を使うため、制限中は通知も失敗する場合があります。その場合は Actions のログを確認し、制限が解除されてから再依頼してください。
 

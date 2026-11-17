@@ -16,7 +16,7 @@ inputs:
   ci_wait_timeout_seconds:
     description: CI 完了を待つ最大秒数（正の整数）
     required: false
-    default: '2700'
+    default: '600'
   ci_start_timeout_seconds:
     description: 対象 CI が未作成の場合の開始猶予秒数（正の整数）
     required: false
