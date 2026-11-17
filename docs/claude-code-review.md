@@ -7,7 +7,7 @@
 Claude Code の PR レビューには、2つの起動方法があります。起動方法ごとに、使用する Composite Action が異なります。
 
 | 起動方法 | Composite Action | 呼び出し元のワークフローのファイル名の例 |
-| --- | --- | --- |
+| --- | --- |
 | PR や Issue に `@claude` を含むコメントを投稿する | [`claude-code/pr-review`](https://github.com/buffett-code-dev/github-actions/tree/main/claude-code/pr-review) | `claude.yml` |
 | PR に `claude-review` ラベルを付与する | [`claude-code/pr-review-on-label`](https://github.com/buffett-code-dev/github-actions/tree/main/claude-code/pr-review-on-label) | `claude-review-on-label.yml`、`claude-review.yml` |
 
@@ -33,11 +33,11 @@ Claude Code の PR レビューの設定には、全リポジトリに共通す�
 
 全リポジトリに共通する設定は、github-actions の `action.yml` に記述しています。
 
-| 変更する設定 | 編集するファイル | 編集する箇所 |
-| --- | --- | --- |
-| 使用するモデル | `claude-code/pr-review/action.yml`、`claude-code/pr-review-on-label/action.yml` | `claude_args` の `--model` |
-| `anthropics/claude-code-action` のバージョン | `claude-code/pr-review/action.yml`、`claude-code/pr-review-on-label/action.yml` | `uses: anthropics/claude-code-action@...` |
-| ラベルで起動したときのレビュー観点と出力形式 | `claude-code/pr-review-on-label/action.yml` | `prompt` |
+| 変更する設定 | 編集するファイル |
+| --- | --- |
+| 使用するモデル | `claude-code/pr-review/action.yml`、`claude-code/pr-review-on-label/action.yml` |
+| `anthropics/claude-code-action` のバージョン | `claude-code/pr-review/action.yml`、`claude-code/pr-review-on-label/action.yml` |
+| ラベルで起動したときのレビュー観点と出力形式 | `claude-code/pr-review-on-label/action.yml` |
 
 呼び出し元のワークフローは、Composite Action を `@main` で参照します。そのため、github-actions の main ブランチに変更をマージすると、全リポジトリに反映されます。プロンプトとモデルの変更を検証する自動テストはないため、マージ後にいずれかのリポジトリでレビューを起動し、結果を確認してください。
 
@@ -45,9 +45,7 @@ Claude Code の PR レビューの設定には、全リポジトリに共通す�
 
 リポジトリごとの設定は、各リポジトリのファイルに記述しています。
 
-| 変更する設定 | 編集するファイル | 編集する箇所 |
-| --- | --- | --- |
-| リポジトリ固有のレビュー観点 | `CLAUDE.md` | - |
-| 起動条件、ジョブの権限 | 呼び出し元のワークフロー | `on`、`if`、`permissions` |
-| レビューの前に成功を確認する CI | 呼び出し元のワークフロー | `with` の `ci_workflow` |
-| セルフマージの判定に使うガイドライン | 呼び出し元のワークフロー | `with` の `self_merge_policy_path` |
+| 変更する設定 | 編集するファイル |
+| --- | --- |
+| リポジトリ固有のレビュー観点 | `CLAUDE.md` |
+| 起動条件、ジョブの権限、レビューの前に成功を確認する CI、セルフマージの判定に使うガイドライン | 呼び出し元のワークフロー |
