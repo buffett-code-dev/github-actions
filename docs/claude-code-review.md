@@ -19,8 +19,8 @@ Claude Code の PR レビューには、2つの起動方法があります。起
 
 | 起動方法 | Composite Action | 呼び出し元のワークフローのファイル名の例 |
 | --- | --- | --- |
-| `@claude` を含むコメントの投稿 | [`claude-code/pr-review`](https://github.com/buffett-code-dev/github-actions/tree/main/claude-code/pr-review) | `claude.yml` |
-| `claude-review` ラベルの付与 | [`claude-code/pr-review-on-label`](https://github.com/buffett-code-dev/github-actions/tree/main/claude-code/pr-review-on-label) | `claude-review-on-label.yml`、`claude-review.yml` |
+| PR や Issue に `@claude` を含むコメントを投稿すると起動します。 | [`claude-code/pr-review`](https://github.com/buffett-code-dev/github-actions/tree/main/claude-code/pr-review) | `claude.yml` |
+| PR に `claude-review` ラベルを付与すると起動します。 | [`claude-code/pr-review-on-label`](https://github.com/buffett-code-dev/github-actions/tree/main/claude-code/pr-review-on-label) | `claude-review-on-label.yml`、`claude-review.yml` |
 
 呼び出し元のワークフローのファイル名は、リポジトリによって異なります。リポジトリが使用している Composite Action は、そのリポジトリの `.github/workflows/` で `buffett-code-dev/github-actions/claude-code/` を検索すると確認できます。
 
