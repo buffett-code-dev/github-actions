@@ -28,6 +28,7 @@
 - **[aws/ecr-login](aws/ecr-login/)** - Amazon ECRへのログイン
 - **[aws/lambda_function_update](aws/lambda_function_update/)** - Lambda関数のDockerイメージを更新
 - **[claude-code/pr-review](claude-code/pr-review/)** - Claude CodeによるPRレビューとIssue対応
+- **[claude-code/pr-review-on-label](claude-code/pr-review-on-label/)** - ラベル付与をきっかけにしたClaude CodeによるPRレビュー
 - **[claude-code/pr-review-on-label](claude-code/pr-review-on-label/)** - ラベル付与を契機に Claude Code で PR をレビュー（任意の CI 成功確認に対応）
 - **[docker/build](docker/build/)** - Dockerイメージのビルドとプッシュ
 - **[github/create-release-reminder-issue](github/create-release-reminder-issue/)** - 未リリースのコミットがある場合にリリースリマインドIssueを作成
@@ -37,6 +38,8 @@
 - **[github/typos](github/typos/)** - タイポチェック
 
 各アクションの詳細な使用方法は、それぞれのディレクトリ内のREADMEを参照してください。
+
+Claude CodeによるPRレビューの設定ファイルの場所と変更方法は、[docs/claude-code-review.md](docs/claude-code-review.md)を参照してください。
 
 ## 新しいアクションの追加
 
