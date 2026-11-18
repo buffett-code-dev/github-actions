@@ -24,3 +24,47 @@ jobs:
           ruby-version: '3.4'
       - name: Test CI gate
         run: ruby claude-code/pr-review-on-label/ci_gate_test.rb
+
+  composite-smoke:
+    # Action の PR コンテキストを実際の runner で解釈する。API と Claude は呼ばない。
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - name: Stub GitHub CLI
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/claude-review-smoke-bin"
+          cat > "$RUNNER_TEMP/claude-review-smoke-bin/gh" <<'SH'
+          #!/bin/bash
+          set -euo pipefail
+          cat >> "$SMOKE_REQUESTS"
+          printf '\n' >> "$SMOKE_REQUESTS"
+          printf '{"id":99}\n'
+          SH
+          chmod +x "$RUNNER_TEMP/claude-review-smoke-bin/gh"
+          echo "$RUNNER_TEMP/claude-review-smoke-bin" >> "$GITHUB_PATH"
+          echo "SMOKE_REQUESTS=$RUNNER_TEMP/claude-review-smoke-requests.jsonl" >> "$GITHUB_ENV"
+      - name: Load composite and exercise CI rejection notification
+        id: smoke
+        continue-on-error: true
+        uses: ./claude-code/pr-review-on-label
+        with:
+          anthropic_api_key: unused-smoke-test
+          github_token: unused-smoke-test
+          ci_workflow: unused-smoke-test.yml
+          ci_base_branches: __smoke_test_excluded_base__
+      - name: Verify composite actually executed
+        if: always()
+        shell: bash
+        env:
+          SMOKE_OUTCOME: ${{ steps.smoke.outcome }}
+        run: |
+          test "$SMOKE_OUTCOME" = failure
+          ruby -rjson -e '
+            requests = File.readlines(ENV.fetch("SMOKE_REQUESTS")).map { |line| JSON.parse(line) }
+            abort "Expected acceptance and rejection notifications" unless requests.size == 2
+            abort "Missing acceptance" unless requests.first.fetch("body").include?("レビュー依頼を受け付けました")
+            abort "Missing CI rejection" unless requests.last.fetch("body").include?("CI の対象外")
+          '

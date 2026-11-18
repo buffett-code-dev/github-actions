@@ -13,6 +13,22 @@ inputs:
     description: 成功を確認する pull_request ワークフローのファイル名または ID。空文字列の場合は確認しない
     required: false
     default: ''
+  ci_wait_timeout_seconds:
+    description: CI 完了を待つ最大秒数（正の整数）
+    required: false
+    default: '600'
+  ci_start_timeout_seconds:
+    description: 対象 CI が未作成の場合の開始猶予秒数（正の整数）
+    required: false
+    default: '300'
+  ci_poll_interval_seconds:
+    description: CI 状態を確認する間隔秒数（正の整数）
+    required: false
+    default: '30'
+  ci_base_branches:
+    description: CI の対象ベースブランチのカンマ区切り一覧。空文字列の場合は制限しない
+    required: false
+    default: ''
   self_merge_policy_path:
     description: ベースコミットから読み込むセルフマージガイドラインのリポジトリ相対パス
     required: false
@@ -21,50 +37,22 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: 対象コミットの CI 成功を確認
+    - name: レビュー依頼を受け付け、対象コミットの CI 完了を待つ
       id: ci-gate
-      if: inputs.ci_workflow != ''
-      shell: ruby {0}
+      shell: bash
       env:
+        ACTION_PATH: ${{ github.action_path }}
         GH_TOKEN: ${{ inputs.github_token }}
         CI_WORKFLOW: ${{ inputs.ci_workflow }}
+        CI_WAIT_TIMEOUT_SECONDS: ${{ inputs.ci_wait_timeout_seconds }}
+        CI_START_TIMEOUT_SECONDS: ${{ inputs.ci_start_timeout_seconds }}
+        CI_POLL_INTERVAL_SECONDS: ${{ inputs.ci_poll_interval_seconds }}
+        CI_BASE_BRANCHES: ${{ inputs.ci_base_branches }}
+        REVIEW_LABEL: ${{ github.event.label.name }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
-      run: |
-        require 'json'
-        require 'open3'
-
-        repo = ENV.fetch('GITHUB_REPOSITORY')
-        pr_number = Integer(ENV.fetch('PR_NUMBER'))
-        head_sha = ENV.fetch('PR_HEAD_SHA')
-        base_ref = ENV.fetch('PR_BASE_REF')
-        workflow = ENV.fetch('CI_WORKFLOW')
-
-        runs_json, status = Open3.capture2(
-          'gh', 'api', "repos/#{repo}/actions/workflows/#{workflow}/runs", '--method', 'GET', '--paginate', '--slurp',
-          '-f', 'event=pull_request', '-f', "head_sha=#{head_sha}"
-        )
-        abort '::error::CI の実行結果を取得できませんでした。' unless status.success?
-
-        runs = JSON.parse(runs_json).flat_map { |page| page.fetch('workflow_runs') }
-        latest_run = runs.select do |run|
-          run.fetch('pull_requests').any? { |pr| pr.fetch('number') == pr_number && pr.dig('base', 'ref') == base_ref }
-        end.max_by { |run| run.fetch('run_number') }
-        conclusion = latest_run.fetch('conclusion') if latest_run&.fetch('status') == 'completed'
-        unless conclusion == 'success'
-          result = conclusion || '未完了または未実行'
-          abort "::error::対象コミットの CI が成功していません（#{result}）。" \
-                'CI 成功後に claude-review ラベルを付け直してください。'
-        end
-
-        pr_json, status = Open3.capture2('gh', 'api', "repos/#{repo}/pulls/#{pr_number}")
-        abort '::error::PR の最新状態を取得できませんでした。' unless status.success?
-
-        current_pr = JSON.parse(pr_json)
-        unless current_pr.dig('head', 'sha') == head_sha && current_pr.dig('base', 'ref') == base_ref
-          abort '::error::ラベル付与後に PR が更新されました。最新の CI 成功後に claude-review ラベルを付け直してください。'
-        end
+      run: ruby "$ACTION_PATH/review_status.rb" wait
 
     # Claude Code Action の作業ディレクトリとしてベース側を使う。
     - uses: actions/checkout@v7
@@ -73,6 +61,7 @@ runs:
         persist-credentials: false
 
     - uses: anthropics/claude-code-action@v1.0.269
+      id: claude
       with:
         anthropic_api_key: ${{ inputs.anthropic_api_key }}
         github_token: ${{ inputs.github_token }}
@@ -83,6 +72,10 @@ runs:
           不具合、回帰、テスト不足を優先し、結果を gh pr comment で対象 PR に1件投稿してください。
           冒頭にはレビューの結果(pass、changes_requested、needs_human)を示してください。
           コード変更、コミット、マージは行わないでください。
+          対象コミット SHA は `${{ github.event.pull_request.head.sha }}` です。
+          差分の取得前と結果の投稿直前に PR の最新 head SHA とベースブランチを確認し、
+          対象 SHA または `${{ github.event.pull_request.base.ref }}` と異なる場合はレビュー結果を投稿せず終了してください。
+          レビュー結果には必ず対象コミット SHA を記載してください。
 
           ${{ inputs.self_merge_policy_path != '' && format('
           セルフマージの事前判定も、同じコメントの「セルフマージ事前判定」欄に記載してください。
@@ -115,3 +108,39 @@ runs:
         claude_args: |
           --model claude-sonnet-5
           --allowedTools "Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*)"
+
+    - name: レビューの終了状態を PR に通知
+      id: notify-finished
+      if: ${{ always() && !cancelled() && steps.ci-gate.outcome == 'success' }}
+      shell: bash
+      env:
+        ACTION_PATH: ${{ github.action_path }}
+        GH_TOKEN: ${{ inputs.github_token }}
+        REVIEW_LABEL: ${{ github.event.label.name }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
+        COMMENT_ID: ${{ steps.ci-gate.outputs.comment_id }}
+        CI_URL: ${{ steps.ci-gate.outputs.ci_url }}
+        REVIEW_OUTCOME: ${{ steps.claude.outcome }}
+        REVIEW_CONCLUSION: ${{ steps.claude.outputs.conclusion }}
+        JOB_CANCELLED: 'false'
+      run: ruby "$ACTION_PATH/review_status.rb" finish
+
+    - name: レビューのキャンセルを PR に通知
+      id: notify-cancelled
+      if: ${{ cancelled() && steps.ci-gate.outcome == 'success' }}
+      shell: bash
+      env:
+        ACTION_PATH: ${{ github.action_path }}
+        GH_TOKEN: ${{ inputs.github_token }}
+        REVIEW_LABEL: ${{ github.event.label.name }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
+        COMMENT_ID: ${{ steps.ci-gate.outputs.comment_id }}
+        CI_URL: ${{ steps.ci-gate.outputs.ci_url }}
+        REVIEW_OUTCOME: ${{ steps.claude.outcome }}
+        REVIEW_CONCLUSION: ${{ steps.claude.outputs.conclusion }}
+        JOB_CANCELLED: 'true'
+      run: ruby "$ACTION_PATH/review_status.rb" finish
