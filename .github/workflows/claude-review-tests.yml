@@ -3,18 +3,29 @@ name: Claude Review Tests
 on:
   pull_request:
     paths:
-      - 'claude-code/pr-review-on-label/**'
+      - 'claude-code/**'
       - '.github/workflows/claude-review-tests.yml'
   push:
     branches: [main]
     paths:
-      - 'claude-code/pr-review-on-label/**'
+      - 'claude-code/**'
       - '.github/workflows/claude-review-tests.yml'
 
 permissions:
   contents: read
 
 jobs:
+  agent-sdk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install Agent SDK
+        run: |
+          python3 -m venv "$RUNNER_TEMP/claude-agent-tests"
+          "$RUNNER_TEMP/claude-agent-tests/bin/python" -m pip install -r claude-code/agent/requirements.txt
+      - name: Test Agent SDK review
+        run: '"$RUNNER_TEMP/claude-agent-tests/bin/python" -m unittest discover -s claude-code/agent'
+
   ci-gate:
     runs-on: ubuntu-latest
     steps:
