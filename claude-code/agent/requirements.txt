@@ -65,10 +65,10 @@ pydantic-core==2.50.5
     # via pydantic
 pyjwt==2.15.1
     # via mcp
-python-multipart==0.0.32 ; python_full_version < '3.11'
-    # via mcp
-python-multipart==0.0.34 ; python_full_version >= '3.11'
-    # via mcp
+python-multipart==0.0.32
+    # via
+    #   -r claude-code/agent/requirements.in
+    #   mcp
 pywin32==312 ; sys_platform == 'win32'
     # via mcp
 referencing==0.37.0

@@ -1,1 +1,3 @@
 claude-agent-sdk==0.2.186
+# mcp の間接依存。Python 3.10 でも修正済み版を必ず使う。
+python-multipart==0.0.32
