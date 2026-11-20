@@ -8,7 +8,7 @@ import os
 import subprocess
 import sys
 import tempfile
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from urllib.parse import quote
 from urllib.request import Request, urlopen
 
@@ -127,6 +127,12 @@ def source_content(data):
 def source_endpoint(repo, path, revision, refs):
     if revision not in refs:
         raise ValueError("Revision must be base or head")
+    if (
+        PurePosixPath(path).is_absolute()
+        or ".." in PurePosixPath(path).parts
+        or "\\" in path
+    ):
+        raise ValueError("The path must stay inside the repository")
     return f"repos/{repo}/contents/{quote(path, safe='/')}?ref={refs[revision]}"
 
 

@@ -151,6 +151,11 @@ class ReviewTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             source_endpoint("org/repo", "README.md", "main", refs)
 
+    def test_source_paths_cannot_escape_the_repository(self):
+        for path in ["../user", "src/../../user", "/user", "src\\..\\user"]:
+            with self.subTest(path=path), self.assertRaises(ValueError):
+                source_endpoint("org/repo", path, "base", {"base": "base-sha"})
+
     def test_source_files_and_directories_decode_without_execution(self):
         content = "# 規約\n日本語のファイル"
         self.assertEqual(
