@@ -17,13 +17,13 @@ Claude Code の PR レビューには、2つの起動方法があります。起
 
 ### `@claude` を含むコメントを投稿したとき
 
-`claude-code/pr-review` はプロンプトを指定していません。Claude は、`@claude` を含むコメントの内容と、リポジトリの `CLAUDE.md` の内容に従ってレビューします。
+`claude-code/pr-review` は、依頼者の権限を確認し、`@claude` を含むコメントと Issue／PR の文脈を共通の Agent SDK 実行スクリプトへ渡します。Claude は base の `CLAUDE.md`・`AGENTS.md` と参照先の規約を読み、レビューや質問への回答を生成します。
 
 ### `claude-review` ラベルを付与したとき
 
-`claude-code/pr-review-on-label` は、`action.yml` の `prompt` でレビューの観点と出力形式を指定しています。Claude は、このプロンプトと、リポジトリの `CLAUDE.md` の内容に従ってレビューします。
+`claude-code/pr-review-on-label` は、`action.yml` の `REVIEW_PROMPT` でレビューの観点と出力形式を指定しています。Claude は、このプロンプトと、リポジトリの `CLAUDE.md` の内容に従ってレビューします。
 
-この Composite Action は、PR のベースコミットで Claude を起動します。そのため、PR で `CLAUDE.md` やセルフマージガイドラインを変更しても、その PR のレビューには反映されません。
+両 Action とも、SDK には固定した base／head コミットのファイルを読むツールだけを与えます。規約とセルフマージガイドラインには base の内容を使います。SDK の実行ディレクトリは空の一時ディレクトリで、リポジトリの設定や hooks は読み込みません。PR の規約変更で、その PR の判定基準が変わることを防ぎます。
 
 ## 設定ファイルの場所と変更方法
 
@@ -35,11 +35,11 @@ Claude Code の PR レビューの設定には、全リポジトリに共通す�
 
 | 変更する設定 | 編集するファイル |
 | --- | --- |
-| 使用するモデル | `claude-code/pr-review/action.yml`、`claude-code/pr-review-on-label/action.yml` |
-| `anthropics/claude-code-action` のバージョン | `claude-code/pr-review/action.yml`、`claude-code/pr-review-on-label/action.yml` |
+| 使用するモデル・SDK の権限と実行処理 | `claude-code/agent/review.py` |
+| Agent SDK のバージョン | `claude-code/agent/requirements.in` と、再生成した `requirements.txt` |
 | ラベルで起動したときのレビュー観点と出力形式 | `claude-code/pr-review-on-label/action.yml` |
 
-呼び出し元のワークフローは、Composite Action を `@main` で参照します。そのため、github-actions の main ブランチに変更をマージすると、全リポジトリに反映されます。プロンプトとモデルの変更を検証する自動テストはないため、マージ後にいずれかのリポジトリでレビューを起動し、結果を確認してください。
+呼び出し元のワークフローは、Composite Action を `@main` で参照します。そのため、github-actions の main ブランチに変更をマージすると、全リポジトリに反映されます。依頼者の権限・SDK の失敗判定・対象 SHA の確認は自動テストで検証します。実際のモデルの回答と課金は自動テストでは検証しないため、マージ後にいずれかのリポジトリでレビューを起動し、結果を確認してください。
 
 ### リポジトリごとの設定
 
