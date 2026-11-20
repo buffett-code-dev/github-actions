@@ -36,7 +36,7 @@ Claude Code の PR レビューの設定には、全リポジトリに共通す�
 | 変更する設定 | 編集するファイル |
 | --- | --- |
 | 使用するモデル・SDK の権限と実行処理 | `claude-code/agent/review.py` |
-| Agent SDK のバージョン | `claude-code/agent/requirements.txt` |
+| Agent SDK のバージョン | `claude-code/agent/requirements.in` と、再生成した `requirements.txt` |
 | ラベルで起動したときのレビュー観点と出力形式 | `claude-code/pr-review-on-label/action.yml` |
 
 呼び出し元のワークフローは、Composite Action を `@main` で参照します。そのため、github-actions の main ブランチに変更をマージすると、全リポジトリに反映されます。依頼者の権限・SDK の失敗判定・対象 SHA の確認は自動テストで検証します。実際のモデルの回答と課金は自動テストでは検証しないため、マージ後にいずれかのリポジトリでレビューを起動し、結果を確認してください。

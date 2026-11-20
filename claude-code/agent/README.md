@@ -2,7 +2,7 @@
 
 `pr-review` と `pr-review-on-label` が `run.sh` を起動し、`review.py` が Claude Agent SDK を直接使用します。API キーは `ANTHROPIC_API_KEY` の1本だけです。
 
-- `requirements.txt`: SDK と同梱 CLI のバージョンを固定。Dependabot の pip 更新対象。
+- `requirements.in`: SDK の直接依存。`requirements.txt` は Python 3.10 以上を対象に間接依存も固定したインストール用ファイル。どちらも Dependabot の pip 更新対象。
 - `review.py`: 依頼者確認、Issue／PR の文脈取得、SDK 実行、正常終了後のコメント投稿。
 - `test_review.py`: イベント解釈、権限、残高不足を含む SDK の失敗、投稿前の SHA・ラベル確認を検証。
 
@@ -19,3 +19,9 @@ python3 -m venv /tmp/claude-agent-tests
 ```
 
 テストは API を呼ばず、SDK の実際のメッセージ型と入力データで判定処理を確認します。実際のレビュー結果、GitHub App の OIDC 認証と月次クレジットによる課金は、利用先で別途確認してください。
+
+依存を手動更新する場合は `requirements.in` を変更し、次のコマンドで固定版を再生成してください。
+
+```sh
+uv pip compile --universal --python-version 3.10 claude-code/agent/requirements.in -o claude-code/agent/requirements.txt
+```
