@@ -43,6 +43,8 @@ jobs:
 
 `claude-review` ラベルは呼び出し元のリポジトリに作成してください。Draft PR も対象です。
 
+ラベルを付与できるのは人間のユーザーと Devin（`devin-ai-integration`）です。その他の bot が付与した場合、Claude Code Action が実行を拒否します。
+
 ## 入力
 
 | 入力 | 必須 | 説明 |
