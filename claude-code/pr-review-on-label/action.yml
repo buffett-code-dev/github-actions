@@ -60,7 +60,7 @@ runs:
         ref: ${{ github.event.pull_request.base.sha }}
         persist-credentials: false
 
-    - uses: anthropics/claude-code-action@v1.0.269
+    - uses: anthropics/claude-code-action@v1.0.286
       id: claude
       with:
         anthropic_api_key: ${{ inputs.anthropic_api_key }}
