@@ -219,8 +219,8 @@ def review():
     repo = os.environ["GITHUB_REPOSITORY"]
     number, is_pr, request = target(event, event_name)
     is_label = event_name == "pull_request"
-    if not is_label:
-        sender = event["sender"]
+    sender = event["sender"]
+    if not is_label or sender["type"] == "Bot":
         permission = None
         if sender["type"] != "Bot":
             permission = github(

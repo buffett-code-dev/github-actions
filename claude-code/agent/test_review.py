@@ -124,6 +124,22 @@ class ReviewTest(unittest.TestCase):
             with self.subTest(pattern=pattern):
                 self.assertTrue(actor_allowed(sender, None, pattern))
 
+    def test_label_bot_allowlist_permits_devin_only(self):
+        self.assertTrue(
+            actor_allowed(
+                {"type": "Bot", "login": "devin-ai-integration[bot]"},
+                None,
+                "devin-ai-integration",
+            )
+        )
+        self.assertFalse(
+            actor_allowed(
+                {"type": "Bot", "login": "another-bot[bot]"},
+                None,
+                "devin-ai-integration",
+            )
+        )
+
     def test_stale_closed_and_unlabelled_reviews_are_rejected(self):
         expected = {
             "state": "open",

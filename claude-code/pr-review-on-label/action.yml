@@ -67,6 +67,8 @@ runs:
         ACTION_PATH: ${{ github.action_path }}
         ANTHROPIC_API_KEY: ${{ inputs.anthropic_api_key }}
         GH_TOKEN: ${{ inputs.github_token }}
+        # Devin（GitHub App）が付与したラベルでもレビューを実行する
+        ALLOWED_BOTS: devin-ai-integration
         SELF_MERGE_POLICY_PATH: ${{ inputs.self_merge_policy_path }}
         REVIEW_PROMPT: |
           ${{ github.repository }} の PR #${{ github.event.pull_request.number }} をレビューしてください。
