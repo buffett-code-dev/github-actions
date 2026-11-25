@@ -7,6 +7,7 @@ import unittest
 from claude_agent_sdk import ResultMessage
 from review import (
     actor_allowed,
+    build_prompt,
     result_text,
     source_content,
     source_endpoint,
@@ -16,6 +17,38 @@ from review import (
 
 
 class ReviewTest(unittest.TestCase):
+    def test_mention_keeps_the_request_without_review_criteria_or_format(self):
+        request = "@claude Explain this function in two English sentences."
+        context = {"issue": {"title": "質問"}, "comments": []}
+        prompt = build_prompt(request, context)
+        self.assertTrue(prompt.startswith(request + "\n\n"))
+        for added_instruction in [
+            "不具合、回帰",
+            "テスト不足",
+            "changes_requested",
+            "needs_human",
+            "対象コミット SHA",
+        ]:
+            with self.subTest(instruction=added_instruction):
+                self.assertNotIn(added_instruction, prompt)
+        self.assertIn('"title": "質問"', prompt)
+
+    def test_mention_keeps_specific_review_focus_verbatim(self):
+        request = "@claude ultrathink。テストコードが適切かだけ確認し、指摘を箇条書きにしてください。"
+        self.assertTrue(build_prompt(request, {}).startswith(request + "\n\n"))
+
+    def test_label_keeps_its_existing_instructions(self):
+        instructions = (
+            "不具合、回帰、テスト不足を優先してください。\n"
+            "冒頭に pass、changes_requested、needs_human を示してください。\n"
+            "セルフマージの事前判定を記載してください。"
+        )
+        context = {"diff": "+new code", "self_merge_policy": "既存の規約"}
+        prompt = build_prompt("PR をレビューしてください。", context, instructions)
+        self.assertTrue(prompt.startswith(instructions + "\n\n"))
+        self.assertEqual(1, prompt.count("不具合、回帰、テスト不足"))
+        self.assertIn("既存の規約", prompt)
+
     def test_mentions_resolve_pr_and_issue_targets(self):
         events = [
             (

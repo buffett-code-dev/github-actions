@@ -17,11 +17,13 @@ Claude Code の PR レビューには、2つの起動方法があります。起
 
 ### `@claude` を含むコメントを投稿したとき
 
-`claude-code/pr-review` は、依頼者の権限を確認し、`@claude` を含むコメントと Issue／PR の文脈を共通の Agent SDK 実行スクリプトへ渡します。Claude は base の `CLAUDE.md`・`AGENTS.md` と参照先の規約を読み、レビューや質問への回答を生成します。
+`claude-code/pr-review` は、依頼者の権限を確認し、`@claude` を含むコメントと Issue／PR の文脈を共通の Agent SDK 実行スクリプトへ渡します。依頼コメントをそのまま指示として渡し、共通処理からレビュー観点・回答言語・判定ラベルを追加しません。Claude は base の `CLAUDE.md`・`AGENTS.md` と参照先の規約を読み、レビューや質問への回答を生成します。
 
 ### `claude-review` ラベルを付与したとき
 
 `claude-code/pr-review-on-label` は、`action.yml` の `REVIEW_PROMPT` でレビューの観点と出力形式を指定しています。Claude は、このプロンプトと、リポジトリの `CLAUDE.md` の内容に従ってレビューします。
+
+システムプロンプトは両 Action とも公式 Action と同じ `claude_code` 標準プリセットを使い、SDK の読み取りツールと投稿処理の説明だけを追加します。
 
 両 Action とも、SDK には固定した base／head コミットのファイルを読むツールだけを与えます。規約とセルフマージガイドラインには base の内容を使います。SDK の実行ディレクトリは空の一時ディレクトリで、リポジトリの設定や hooks は読み込みません。PR の規約変更で、その PR の判定基準が変わることを防ぎます。
 
