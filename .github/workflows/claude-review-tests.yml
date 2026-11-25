@@ -22,9 +22,9 @@ jobs:
       - name: Install Agent SDK
         run: |
           python3 -m venv "$RUNNER_TEMP/claude-agent-tests"
-          "$RUNNER_TEMP/claude-agent-tests/bin/python" -m pip install -r claude-code/agent/requirements.txt
+          "$RUNNER_TEMP/claude-agent-tests/bin/python" -m pip install -r claude-code/pr-review-on-label-2/requirements.txt
       - name: Test Agent SDK review
-        run: '"$RUNNER_TEMP/claude-agent-tests/bin/python" -m unittest discover -s claude-code/agent'
+        run: '"$RUNNER_TEMP/claude-agent-tests/bin/python" -m unittest discover -s claude-code/pr-review-on-label-2'
 
   ci-gate:
     runs-on: ubuntu-latest
@@ -39,6 +39,9 @@ jobs:
   composite-smoke:
     # Action の PR コンテキストを実際の runner で解釈する。API と Claude は呼ばない。
     if: github.event_name == 'pull_request'
+    strategy:
+      matrix:
+        implementation: [original, sdk]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -59,8 +62,19 @@ jobs:
           echo "SMOKE_REQUESTS=$RUNNER_TEMP/claude-review-smoke-requests.jsonl" >> "$GITHUB_ENV"
       - name: Load composite and exercise CI rejection notification
         id: smoke
+        if: matrix.implementation == 'original'
         continue-on-error: true
         uses: ./claude-code/pr-review-on-label
+        with:
+          anthropic_api_key: unused-smoke-test
+          github_token: unused-smoke-test
+          ci_workflow: unused-smoke-test.yml
+          ci_base_branches: __smoke_test_excluded_base__
+      - name: Load experimental Agent SDK composite
+        id: smoke-sdk
+        if: matrix.implementation == 'sdk'
+        continue-on-error: true
+        uses: ./claude-code/pr-review-on-label-2
         with:
           anthropic_api_key: unused-smoke-test
           github_token: unused-smoke-test
@@ -70,7 +84,7 @@ jobs:
         if: always()
         shell: bash
         env:
-          SMOKE_OUTCOME: ${{ steps.smoke.outcome }}
+          SMOKE_OUTCOME: ${{ matrix.implementation == 'sdk' && steps.smoke-sdk.outcome || steps.smoke.outcome }}
         run: |
           test "$SMOKE_OUTCOME" = failure
           ruby -rjson -e '

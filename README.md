@@ -27,8 +27,9 @@
 - **[aws/credentials](aws/credentials/)** - AWS認証情報を設定
 - **[aws/ecr-login](aws/ecr-login/)** - Amazon ECRへのログイン
 - **[aws/lambda_function_update](aws/lambda_function_update/)** - Lambda関数のDockerイメージを更新
-- **[claude-code/pr-review](claude-code/pr-review/)** - Agent SDKによるPRレビューとIssue対応（依頼文のレビュー観点・回答形式を維持）
-- **[claude-code/pr-review-on-label](claude-code/pr-review-on-label/)** - ラベル付与を契機に Agent SDK で PR をレビュー（期限付き CI 完了待機・PR への状態通知に対応。runner での読み込みテストあり）
+- **[claude-code/pr-review](claude-code/pr-review/)** - Claude CodeによるPRレビューとIssue対応
+- **[claude-code/pr-review-on-label](claude-code/pr-review-on-label/)** - ラベル付与を契機に Claude Code で PR をレビュー（期限付き CI 完了待機・PR への状態通知に対応。runner での読み込みテストあり）
+- **[claude-code/pr-review-on-label-2](claude-code/pr-review-on-label-2/)** - 既存版と並行して試せる Agent SDK の実験用 PR レビュー
 - **[docker/build](docker/build/)** - Dockerイメージのビルドとプッシュ
 - **[github/create-release-reminder-issue](github/create-release-reminder-issue/)** - 未リリースのコミットがある場合にリリースリマインドIssueを作成
 - **[github/git-pr-release](github/git-pr-release/)** - staging→productionのリリースPRを自動作成 (git-pr-release)

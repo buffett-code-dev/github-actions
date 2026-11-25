@@ -1,5 +1,5 @@
 name: 'Claude PR Review'
-description: 'Claude Agent SDKによるPRレビューとIssue対応'
+description: 'Claude Code ActionによるPRレビューとIssue対応'
 author: 'buffett-code-dev'
 
 inputs:
@@ -15,7 +15,7 @@ inputs:
     required: false
     default: '1'
   github_token:
-    description: 'GitHubの操作に使うトークン。省略時は従来どおり OIDC で Claude GitHub App のトークンを取得する'
+    description: 'GitHubの操作に使うトークン。渡すとClaude GitHub Appのトークンを取りに行かないので、呼び出し側でid-token: writeが不要になる。空のときは従来どおりGitHub Appのトークンを使う'
     required: false
     default: ''
 
@@ -26,14 +26,13 @@ runs:
       uses: actions/checkout@v7
       with:
         fetch-depth: ${{ inputs.checkout_fetch_depth }}
-        ref: ${{ github.event.pull_request.base.sha || github.event.repository.default_branch }}
-        persist-credentials: false
 
-    - name: Run Claude PR Review with Agent SDK
-      shell: bash
-      env:
-        ACTION_PATH: ${{ github.action_path }}
-        ANTHROPIC_API_KEY: ${{ inputs.anthropic_api_key }}
-        GH_TOKEN: ${{ inputs.github_token }}
-        ALLOWED_BOTS: ${{ inputs.allowed_bots }}
-      run: bash "$ACTION_PATH/../agent/run.sh"
+    - name: Run Claude PR Action
+      # よりセキュアに運用するため、v1 と記載せずにパッチバージョンまで明記している
+      uses: anthropics/claude-code-action@v1.0.269
+      with:
+        anthropic_api_key: ${{ inputs.anthropic_api_key }}
+        allowed_bots: ${{ inputs.allowed_bots }}
+        github_token: ${{ inputs.github_token }}
+        claude_args: |
+          --model claude-sonnet-5

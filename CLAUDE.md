@@ -16,6 +16,7 @@ buffett-code-devプロジェクト内の複数のリポジトリで共通的に�
 ```
 .
 ├── aws/                    # AWS関連のアクション
+├── claude-code/            # Claude レビュー（既存版と Agent SDK 実験版 pr-review-on-label-2）
 │   ├── credentials/        # AWS認証設定
 │   └── lambda_function_update/  # Lambda関数更新
 ├── docker/                 # Docker関連のアクション
