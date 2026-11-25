@@ -7,6 +7,14 @@ updates:
       timezone: "Asia/Tokyo"
     cooldown:
       default-days: 2
+    groups:
+      minor-and-patch:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "github-actions"
     directory: "./claude-code/pr-review-on-label"
@@ -15,6 +23,14 @@ updates:
       timezone: "Asia/Tokyo"
     cooldown:
       default-days: 2
+    groups:
+      minor-and-patch:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "github-actions"
     directory: "./aws/credentials"
@@ -23,6 +39,14 @@ updates:
       timezone: "Asia/Tokyo"
     cooldown:
       default-days: 2
+    groups:
+      minor-and-patch:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "github-actions"
     directory: "./aws/lambda_function_update"
@@ -31,6 +55,14 @@ updates:
       timezone: "Asia/Tokyo"
     cooldown:
       default-days: 2
+    groups:
+      minor-and-patch:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "github-actions"
     directory: "./aws/ecr-login"
@@ -39,6 +71,14 @@ updates:
       timezone: "Asia/Tokyo"
     cooldown:
       default-days: 2
+    groups:
+      minor-and-patch:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "github-actions"
     directory: "./docker/build"
@@ -47,6 +87,14 @@ updates:
       timezone: "Asia/Tokyo"
     cooldown:
       default-days: 2
+    groups:
+      minor-and-patch:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "github-actions"
     directory: "./github/manage-stale-items"
@@ -55,6 +103,14 @@ updates:
       timezone: "Asia/Tokyo"
     cooldown:
       default-days: 2
+    groups:
+      minor-and-patch:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "github-actions"
     directory: "./github/typos"
@@ -63,6 +119,14 @@ updates:
       timezone: "Asia/Tokyo"
     cooldown:
       default-days: 2
+    groups:
+      minor-and-patch:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "github-actions"
     directory: "./github/git-pr-release"
@@ -71,6 +135,14 @@ updates:
       timezone: "Asia/Tokyo"
     cooldown:
       default-days: 2
+    groups:
+      minor-and-patch:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "github-actions"
     directory: "./github/release-please"
@@ -79,6 +151,14 @@ updates:
       timezone: "Asia/Tokyo"
     cooldown:
       default-days: 2
+    groups:
+      minor-and-patch:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "github-actions"
     directory: ".github/workflows"
@@ -87,3 +167,11 @@ updates:
       timezone: "Asia/Tokyo"
     cooldown:
       default-days: 2
+    groups:
+      minor-and-patch:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
