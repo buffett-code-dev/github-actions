@@ -1,7 +1,23 @@
 version: 2
 updates:
+  - package-ecosystem: "pip"
+    directory: "./claude-code/pr-review-on-label-2"
+    schedule:
+      interval: "weekly"
+      timezone: "Asia/Tokyo"
+    cooldown:
+      default-days: 2
+
   - package-ecosystem: "github-actions"
     directory: "./claude-code/pr-review"
+    schedule:
+      interval: "weekly"
+      timezone: "Asia/Tokyo"
+    cooldown:
+      default-days: 2
+
+  - package-ecosystem: "github-actions"
+    directory: "./claude-code/pr-review-on-label-2"
     schedule:
       interval: "weekly"
       timezone: "Asia/Tokyo"

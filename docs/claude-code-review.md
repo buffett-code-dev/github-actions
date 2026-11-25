@@ -25,6 +25,14 @@ Claude Code の PR レビューには、2つの起動方法があります。起
 
 この Composite Action は、PR のベースコミットで Claude を起動します。そのため、PR で `CLAUDE.md` やセルフマージガイドラインを変更しても、その PR のレビューには反映されません。
 
+## Agent SDK 版の実験
+
+既存の2つの Action は変更せず、[`claude-code/pr-review-on-label-2`](../claude-code/pr-review-on-label-2/README.md) で Agent SDK 版を試せます。利用先がこの Action を明示的に参照した場合だけ SDK 版が動きます。
+
+比較するときは既存のワークフローを残し、別ワークフローで `claude-review-sdk` などのラベルと専用の concurrency を指定します。レビュー観点と出力形式は既存のラベル版を引き継ぎます。詳しい設定例と検証方法は実験版の README を参照してください。
+
+SDK の実行処理と読み取りツールは `claude-code/pr-review-on-label-2/review.py`、固定した依存は同じディレクトリの `requirements.in`・`requirements.txt` にあります。既存の CI 待ちと状態通知スクリプトを再利用します。実験終了時は追加したワークフローを外してください。
+
 ## 設定ファイルの場所と変更方法
 
 Claude Code の PR レビューの設定には、全リポジトリに共通する設定と、リポジトリごとの設定があります。どちらの設定を変更するかによって、編集するリポジトリが異なります。
